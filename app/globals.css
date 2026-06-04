@@ -19,6 +19,39 @@ button,
 a {
   cursor: pointer;
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.category-scrollbar {
+  scrollbar-color: #f04423 #f4f4f4;
+  scrollbar-width: thin;
+}
+
+.category-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.category-scrollbar::-webkit-scrollbar-track {
+  background: #f4f4f4;
+  border-radius: 999px;
+}
+
+.category-scrollbar::-webkit-scrollbar-thumb {
+  background: #f04423;
+  border-radius: 999px;
+}
+
+.category-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d93618;
+}
+
 @keyframes bannerZoom {
   0% {
     background-size: 100%;

@@ -26,8 +26,12 @@ export default function GlobalProductSidebar() {
     pathname === "/cart" ||
     pathname.startsWith("/checkout") ||
     pathname === "/contact" ||
+    pathname === "/about" ||
+    pathname === "/all-peptides" ||
+    pathname === "/popular-peptides" ||
+    pathname === "/bundle-save" ||
     pathname === "/peptide-storage" ||
-    pathname === "/peptide-information" ||
+    pathname.startsWith("/peptide-information") ||
     pathname.startsWith("/peptide-research") ||
     pathname.startsWith("/products/")
   ) {
@@ -35,17 +39,17 @@ export default function GlobalProductSidebar() {
   }
 
   return (
-    <aside className="fixed bottom-0 left-[max(0px,calc((100vw-1280px)/2))] top-[132px] z-30 hidden w-[280px] overflow-y-auto bg-white px-5 py-7 lg:block">
-      <h2 className="mb-8 text-2xl font-bold text-[#F04423]">Product List</h2>
+    <aside className="fixed bottom-0 left-[max(0px,calc((100vw-1280px)/2))] top-[140px] z-30 hidden w-[260px] overflow-y-auto bg-white px-5 py-7 lg:block">
+      <h2 className="mb-6 text-lg font-semibold text-[#F04423]">Product List</h2>
 
-      <div className="space-y-8">
+      <div className="space-y-10 border-r border-[#E5E5E5] pr-4">
         {Object.entries(productsByCategory).map(([category, items]) => (
           <section key={category}>
-            <h3 className="mb-4 text-xl font-black text-[#090909]">
+            <h3 className="mb-3 text-lg font-semibold text-[#F04423]">
               {category}
             </h3>
 
-            <ul className="space-y-4 text-base leading-7 text-[#56585C]">
+            <ul className="space-y-1.5 text-sm leading-5 text-[#56585C]">
               {items.map((product, index) => {
                 const productKey = product.slug || product.id;
 

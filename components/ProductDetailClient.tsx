@@ -112,30 +112,29 @@ export default function ProductDetailClient({
     <main className="min-h-screen bg-white text-[#090909]">
       <Navbar />
 
-      <section className="bg-white px-5 py-10 sm:px-8 lg:px-10">
-        <div className="mx-auto max-w-[1280px]">
+      <section className="bg-white px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-7xl">
           <Link
-            href="/#products"
+            href="/all-peptides"
             className="cursor-pointer text-sm font-medium text-[#F04423] transition hover:text-[#D93A18]"
           >
             {t("backToProducts", "Back to Products")}
           </Link>
 
-          <section className="mt-8 grid gap-8 lg:grid-cols-[330px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)_320px]">
-            <div className="self-start overflow-hidden rounded-md border border-[#E5E5E5] bg-white shadow-sm">
-              <div className="flex aspect-[0.72] items-center justify-center bg-[#FFF8F5] p-4">
+          <section className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[390px_1fr_320px]">
+            <div className="flex justify-center self-start">
+              <div className="relative flex h-[390px] w-[390px] items-center justify-center lg:h-[490px] lg:w-[490px]">
                 <Image
                   src={product.image || "/medicineproduct.jpg"}
                   alt={displayProduct.name}
-                  width={500}
-                  height={500}
-                  className="h-full w-full object-contain"
+                  fill
+                  className="object-contain"
                   priority
                 />
               </div>
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 space-y-5 lg:pl-14">
               {displayProduct.category && (
                 <p className="inline-flex rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                   {displayProduct.category}
@@ -143,23 +142,23 @@ export default function ProductDetailClient({
               )}
 
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <h1 className="text-4xl font-semibold leading-tight text-[#111827] md:text-[44px]">
+                <h1 className="text-3xl font-bold leading-tight text-[#111827]">
                   {displayProduct.name}
                 </h1>
-                <span className="rounded-md bg-[#F04423] px-3 py-1 text-sm font-semibold text-white">
+                <span className="rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold text-white">
                   {t("freeShipping", "FREE Shipping")}
                 </span>
               </div>
 
               {displayDetails?.tagline && (
-                <p className="mt-5 max-w-2xl text-base font-semibold leading-7 text-black">
+                <p className="max-w-[420px] text-sm font-semibold leading-6 text-black">
                   {displayDetails.tagline}
                 </p>
               )}
 
               {topPreviewText && (
                 <p
-                  className="mt-8 max-w-2xl overflow-hidden text-[15px] leading-7 text-black"
+                  className="max-w-[420px] overflow-hidden text-sm leading-6 text-[#56585C]"
                   style={{
                     display: "-webkit-box",
                     WebkitBoxOrient: "vertical",
@@ -171,7 +170,7 @@ export default function ProductDetailClient({
               )}
             </div>
 
-            <div className="self-start lg:col-start-2 xl:col-start-auto">
+            <div className="self-start lg:col-start-auto">
               <ProductPurchasePanel product={displayProduct} t={t} />
             </div>
 
@@ -236,18 +235,18 @@ function ProductInformationTabs({
   };
 
   return (
-    <section className="mt-2 grid gap-8 border-t border-[#E5E5E5] pt-10 lg:grid-cols-[280px_1fr]">
-      <aside>
-        <h2 className="text-xl font-semibold text-[#F04423]">
+    <section className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-[260px_1fr]">
+      <aside className="hidden border-r border-[#E5E5E5] pr-4 text-sm lg:block">
+        <h2 className="text-lg font-semibold text-[#F04423]">
           Product List
         </h2>
-        <div className="mt-8 space-y-8">
+        <div className="mt-6 space-y-10">
           {Object.entries(productsByCategory).map(([category, items]) => (
             <section key={category}>
-              <h3 className="mb-4 text-lg font-black text-[#090909]">
+              <h3 className="mb-3 text-lg font-semibold text-[#F04423]">
                 {category}
               </h3>
-              <ul className="space-y-3 text-sm leading-6 text-[#111827]">
+              <ul className="space-y-1.5 text-sm leading-5 text-[#56585C]">
                 {items.map((item) => (
                   <li key={item.slug || item.id}>
                     <Link
@@ -269,16 +268,16 @@ function ProductInformationTabs({
       </aside>
 
       <div>
-        <div className="flex flex-wrap gap-10 border-b border-[#E5E5E5]">
+        <div className="flex flex-wrap gap-8 border-b border-[#E5E5E5] text-sm font-semibold uppercase">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => openTab(tab.id)}
-              className={`pb-4 text-xl font-medium transition ${
+              className={`pb-3 transition ${
                 activeTab === tab.id
-                  ? "border-b-2 border-[#F04423] text-[#F04423]"
-                  : "text-[#111827] hover:text-[#F04423]"
+                  ? "border-b-2 border-black text-black"
+                  : "text-[#56585C] hover:text-[#F04423]"
               }`}
             >
               {tab.label}
@@ -286,7 +285,7 @@ function ProductInformationTabs({
           ))}
         </div>
 
-        <div ref={tabContentRef} className="relative scroll-mt-36 overflow-hidden bg-white pt-10">
+        <div ref={tabContentRef} className="relative scroll-mt-36 overflow-hidden bg-white py-8 text-sm text-[#56585C]">
           {activeTab === "description" && (
             <FullDescriptionContent
               chemicalPropertyImages={chemicalPropertyImages}
@@ -368,7 +367,7 @@ function StorageInstructions({
     <p>For further information on proper storage techniques, click the link below:</p>
 
     <Link
-      href="/peptide-storage"
+      href="/peptide-information/peptide-storage"
       className="inline-block text-[16px] font-normal text-[#F04423] transition hover:text-[#D93618]"
     >
       Peptide Storage Information
@@ -433,30 +432,30 @@ function ProductPurchasePanel({
   }
 
   return (
-    <section className="w-full max-w-[320px] rounded-md bg-white pr-1 xl:ml-auto">
+    <section className="w-full max-w-[320px] bg-white p-6 xl:ml-auto">
       {typeof product.price === "number" && (
-        <p className="text-3xl font-semibold leading-none text-[#F04423]">
+        <p className="text-3xl font-bold leading-none text-[#F04423]">
           ${unitPrice.toFixed(2)}
         </p>
       )}
 
-      <div className="mt-7 inline-grid grid-cols-3 overflow-hidden rounded-md border border-[#8A8A8A] bg-white">
+      <div className="mt-7 inline-grid grid-cols-3 overflow-hidden rounded-md border border-[#CFCFCF] bg-white">
         <button
           type="button"
           onClick={() => updateQuantity(quantity - 1)}
           disabled={quantity <= 1}
-          className="flex h-[52px] w-[62px] items-center justify-center border-r border-[#8A8A8A] text-[#8A8A8A] transition hover:text-[#F04423] disabled:opacity-40"
+          className="flex h-[44px] w-[54px] items-center justify-center border-r border-[#CFCFCF] text-[#8A8A8A] transition hover:text-[#F04423] disabled:opacity-40"
           aria-label="Decrease quantity"
         >
           <Minus size={20} />
         </button>
-        <span className="flex h-[52px] w-[66px] items-center justify-center border-r border-[#8A8A8A] text-lg text-[#2F4058]">
+        <span className="flex h-[44px] w-[58px] items-center justify-center border-r border-[#CFCFCF] text-base text-[#2F4058]">
           {quantity}
         </span>
         <button
           type="button"
           onClick={() => updateQuantity(quantity + 1)}
-          className="flex h-[52px] w-[62px] items-center justify-center text-[#6B6B6B] transition hover:text-[#F04423]"
+          className="flex h-[44px] w-[54px] items-center justify-center text-[#6B6B6B] transition hover:text-[#F04423]"
           aria-label="Increase quantity"
         >
           <Plus size={23} />
@@ -467,7 +466,7 @@ function ProductPurchasePanel({
         product={cartProduct}
         quantity={quantity}
         showIcon={false}
-        className="mt-6 min-h-[56px] rounded-lg text-lg"
+        className="mt-6 min-h-[48px] rounded-md text-sm"
       />
 
       <div className="mt-6 space-y-2">
@@ -530,11 +529,11 @@ function FullDescriptionContent({
       <section className="relative min-h-[380px] overflow-hidden rounded-[24px] border border-[#E5E5E5] bg-white p-8 sm:p-12">
         <div className="pointer-events-none absolute inset-y-0 left-[70px] w-[240px]">
           <Image
-            src="/DNA1.jpeg"
+            src="/dnaaa.svg"
             alt=""
             fill
             sizes="240px"
-            className="object-cover object-left opacity-[0.12]"
+            className="object-contain object-left "
           />
         </div>
         <div

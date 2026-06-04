@@ -2,24 +2,26 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import PeptideInfoSubNav from "@/components/PeptideInfoSubNav";
 
 const glossaryLinks = [
-  "Introduction to Peptides",
-  "American Made Peptides",
-  "Peptide Bonds",
-  "Peptide Purity",
-  "Peptide Purification",
-  "Peptide Solubility",
-  "Peptide Storage",
-  "Peptide Synthesis",
-  "Peptides vs Proteins",
-  "Research Peptides",
+  { href: "/peptide-information/intro-to-peptides", label: "Introduction to Peptides" },
+  { href: "/peptide-information#american-made-peptides", label: "American Made Peptides" },
+  { href: "/peptide-information#peptide-bonds", label: "Peptide Bonds" },
+  { href: "/peptide-information#peptide-purification", label: "Peptide Purity" },
+  { href: "/peptide-information#peptide-purification", label: "Peptide Purification" },
+  { href: "/peptide-information#peptide-solubility", label: "Peptide Solubility" },
+  { href: "#article", label: "Peptide Storage" },
+  { href: "/peptide-information#peptide-synthesis", label: "Peptide Synthesis" },
+  { href: "/peptide-information#peptides-vs-proteins", label: "Peptides vs Proteins" },
+  { href: "/peptide-research", label: "Research Peptides" },
 ];
 
 export default function PeptideStoragePage() {
   return (
     <main className="min-h-screen bg-white text-black">
       <Navbar />
+      <PeptideInfoSubNav />
 
       <section
         className="relative overflow-hidden bg-white"
@@ -39,10 +41,10 @@ export default function PeptideStoragePage() {
               </h2>
               <ul className="space-y-1 text-[18px] leading-[1.5] text-[#111827]">
                 {glossaryLinks.map((item) => (
-                  <li key={item}>
-                    <a href="#article" className="transition hover:text-[#F04423]">
-                      {item}
-                    </a>
+                  <li key={item.label}>
+                    <Link href={item.href} className="transition hover:text-[#F04423]">
+                      {item.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -51,7 +53,7 @@ export default function PeptideStoragePage() {
             <div className="space-y-10">
               <div className="h-[24px] w-full max-w-[235px] border border-[#C9C9C9] bg-white/40" />
               <Link
-                href="/#all-peptides"
+                href="/all-peptides"
                 className="inline-flex h-[48px] min-w-[235px] items-center justify-center rounded-[8px] bg-[#F04423] px-8 text-[16px] font-bold text-white transition hover:bg-[#D93618]"
               >
                 All Peptides

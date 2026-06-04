@@ -11,11 +11,11 @@ export default function ProductGrid() {
   const popularScrollRef = useRef<HTMLDivElement>(null);
   const productList = PRODUCTS as Product[];
   const categories = Array.from(
-    new Set(productList.map((product) => product.category).filter(Boolean))
+    new Set(productList.map((product) => product.category).filter(Boolean)),
   ) as string[];
   const popularProducts = productList
     .filter((product) => product.category === "Popular Peptides")
-    .slice(0, 6);
+    .slice(0, 8);
   const bundleProducts = productList
     .filter((product) => {
       const text = `${product.name} ${product.slug || ""} ${product.category || ""}`;
@@ -30,12 +30,11 @@ export default function ProductGrid() {
     selectedCategory === "All Peptides"
       ? productList
       : productList.filter((product) => product.category === selectedCategory);
+
   const scrollPopularProducts = (direction: "left" | "right") => {
     const scrollContainer = popularScrollRef.current;
 
-    if (!scrollContainer) {
-      return;
-    }
+    if (!scrollContainer) return;
 
     scrollContainer.scrollBy({
       left: direction === "left" ? -scrollContainer.clientWidth : scrollContainer.clientWidth,
@@ -45,43 +44,43 @@ export default function ProductGrid() {
 
   return (
     <div className="min-w-0">
-      <section className="max-w-none">
-<h1 className="text-2xl font-medium leading-tight text-[#090909] md:text-3xl lg:text-[38px]">
-  Buy Peptides for Scientific Research and Development
-</h1>
+      <section>
+        <h1 className="text-3xl font-bold leading-tight text-[#090909] md:text-4xl">
+          Buy Peptides for Scientific Research and Development
+        </h1>
 
-        <div className="mt-8 space-y-3 text-base leading-7 text-[#090909] lg:text-[18px] lg:leading-7">
+        <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#56585C]">
           <p>
-        Ivexia Peptide™ specializes in the synthesis of highly purified peptides, proteins and amino acid derivatives for scientific research and development.uses automated, and manual peptide synthesizers as well as solution and solid-phase peptide synthetic technology to offer the finest quality peptides and proteins that exceed 99% purity. From the initial stages of peptide synthesis to packaging and delivery, our company implements the most stringent quality control standards to ensure that all peptides arrive in their purest and most stable form. In house testing at all stages of production at our analytical test lab verifies our peptides sequential fingerprints for precision accuracy. This is achieved through highly accurate High-Performance Liquid Chromatography and Mass Spectrometry analysis, which scientifically proves the purity, accuracy and identity of each peptide.
+            Ivexia Peptide specializes in the synthesis of highly purified peptides,
+            proteins and amino acid derivatives for scientific research and
+            development. Our product information is organized for quick browsing,
+            clear research-use notices, and focused product comparison.
           </p>
         </div>
       </section>
 
       {popularProducts.length > 0 && (
         <section id="popular-peptides" className="mt-10 scroll-mt-40">
-          <h2 className="text-3xl font-semibold leading-tight text-[#090909] md:text-4xl">
+          <h2 className="mb-4 text-2xl font-semibold leading-tight text-[#090909]">
             {t("popularPeptides", "Popular Peptides")}
           </h2>
 
-          <div className="relative mt-8">
+          <div className="relative">
             <button
               type="button"
               aria-label="Scroll popular peptides left"
               onClick={() => scrollPopularProducts("left")}
-              className="absolute left-0 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center text-[#8A8A8A] transition hover:text-[#F04423]"
+              className="absolute left-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border bg-white text-[#8A8A8A] shadow-md transition hover:bg-[#F7F7F7] hover:text-[#F04423] md:flex"
             >
-              <ChevronLeft size={44} strokeWidth={3.6} />
+              <ChevronLeft size={16} strokeWidth={3} />
             </button>
 
             <div
               ref={popularScrollRef}
-              className="flex min-w-0 snap-x snap-mandatory gap-5 overflow-x-auto pb-3"
+              className="scrollbar-none grid grid-flow-col auto-cols-[calc(100%/2)] gap-3 overflow-x-auto px-0 pb-3 scroll-smooth sm:auto-cols-[calc(100%/3)] lg:auto-cols-[calc(100%/4)] lg:px-12"
             >
               {popularProducts.map((product, index) => (
-                <div
-                  key={`popular-${product.slug || product.id}-${index}`}
-                  className="w-full shrink-0 snap-start md:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]"
-                >
+                <div key={`popular-${product.slug || product.id}-${index}`} className="snap-start">
                   <ProductCard product={product} />
                 </div>
               ))}
@@ -91,9 +90,9 @@ export default function ProductGrid() {
               type="button"
               aria-label="Scroll popular peptides right"
               onClick={() => scrollPopularProducts("right")}
-              className="absolute right-0 top-1/2 z-10 flex translate-x-1/2 -translate-y-1/2 items-center justify-center text-[#8A8A8A] transition hover:text-[#F04423]"
+              className="absolute right-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border bg-white text-[#8A8A8A] shadow-md transition hover:bg-[#F7F7F7] hover:text-[#F04423] md:flex"
             >
-              <ChevronRight size={44} strokeWidth={3.6} />
+              <ChevronRight size={16} strokeWidth={3} />
             </button>
           </div>
         </section>
@@ -101,28 +100,25 @@ export default function ProductGrid() {
 
       {bundleProducts.length > 0 && (
         <section id="bundle-save" className="mt-16 scroll-mt-40">
-          <h2 className="text-2xl font-semibold leading-tight text-[#090909] md:text-3xl">
+          <h2 className="text-2xl font-semibold leading-tight text-[#090909]">
             20 Vial Peptide Bundles (10 vials of each peptide)
           </h2>
 
-          <div className="mt-8 grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid min-w-0 grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 xl:grid-cols-4">
             {bundleProducts.map((product, index) => (
-              <ProductCard
-                key={`bundle-${product.slug || product.id}-${index}`}
-                product={product}
-              />
+              <ProductCard key={`bundle-${product.slug || product.id}-${index}`} product={product} />
             ))}
           </div>
         </section>
       )}
 
       <section id="all-peptides" className="mt-16 scroll-mt-40">
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold leading-tight md:text-3xl">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold leading-tight md:text-3xl">
             Shop by Category
           </h2>
 
-          <div className="mt-7 flex w-full gap-4 overflow-x-auto pb-3">
+          <div className="scrollbar-none mt-7 flex w-full cursor-grab select-none gap-3 overflow-x-auto pb-3">
             {["All Peptides", ...categories].map((category) => {
               const active = selectedCategory === category;
 
@@ -131,9 +127,9 @@ export default function ProductGrid() {
                   key={category}
                   type="button"
                   onClick={() => setSelectedCategory(category)}
-                  className={`shrink-0 rounded-[8px] border px-5 py-3 text-base font-medium transition ${
+                  className={`shrink-0 rounded-xl border px-5 py-2 text-sm font-semibold transition ${
                     active
-                      ? "border-[#F04423] bg-[#F04423] text-white"
+                      ? "border-[#090909] bg-[#090909] text-white"
                       : "border-[#F04423] bg-white text-[#F04423] hover:bg-[#FFF4F0]"
                   }`}
                 >
@@ -144,34 +140,18 @@ export default function ProductGrid() {
           </div>
         </div>
 
-      <h2 className="text-2xl font-black leading-tight md:text-3xl">
-        {selectedCategory === "All Peptides"
-          ? t("allPeptides", "All Peptides")
-          : selectedCategory}
-      </h2>
+        <p className="text-sm text-[#56585C]">
+          {t("showingProducts", "Showing {count} products").replace(
+            "{count}",
+            String(visibleProducts.length),
+          )}
+        </p>
 
-      <p className="mt-4 max-w-5xl text-sm leading-6 text-[#374151]">
-        {t(
-          "gridDescription",
-          "Explore our complete collection of research-use-only peptide products for scientific and investigative purposes."
-        )}
-      </p>
-
-      <p className="mt-5 text-sm font-medium text-[#090909]">
-        {t("showingProducts", "Showing {count} products").replace(
-          "{count}",
-          String(visibleProducts.length)
-        )}
-      </p>
-
-     <div className="mt-6 grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {visibleProducts.map((product, index) => (
-          <ProductCard
-            key={`${product.slug || product.id}-${index}`}
-            product={product}
-          />
-        ))}
-      </div>
+        <div className="mt-6 grid min-w-0 grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:grid-cols-4">
+          {visibleProducts.map((product, index) => (
+            <ProductCard key={`${product.slug || product.id}-${index}`} product={product} />
+          ))}
+        </div>
       </section>
     </div>
   );

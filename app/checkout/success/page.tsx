@@ -83,7 +83,7 @@ export default function CheckoutSuccessPage() {
                 View account
               </Link>
               <Link
-                href="/#products"
+                href="/all-peptides"
                 className="rounded-md border border-[#CFCFCF] px-5 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#F04423] hover:text-[#F04423]"
               >
                 Continue shopping

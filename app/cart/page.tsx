@@ -33,9 +33,9 @@ export default function CartPage() {
     <main className="min-h-screen bg-white text-[#090909]">
       <Navbar />
 
-      <section className="border-b border-[#E5E5E5] bg-[linear-gradient(180deg,#FFF2EF_0%,#FAFAFA_44%,#FFFFFF_100%)] px-5 py-10 sm:px-8 lg:px-10">
-        <div className="mx-auto max-w-[1280px]">
-          <div className="flex flex-col justify-between gap-5 rounded-md border border-[#F04423]/15 bg-white/85 p-6 shadow-sm sm:flex-row sm:items-end">
+      <section className="border-b border-[#E5E5E5] bg-gradient-to-br from-white via-[#fff7f4] to-white px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col justify-between gap-5 rounded-2xl border border-[#F04423]/15 bg-white/90 p-6 shadow-sm sm:flex-row sm:items-end">
             <div>
               <p className="inline-flex rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                 Shopping cart
@@ -69,7 +69,7 @@ export default function CartPage() {
           </div>
 
           {items.length === 0 ? (
-            <div className="mt-8 rounded-md border border-[#F04423]/20 bg-white px-6 py-14 text-center shadow-sm">
+            <div className="mt-8 rounded-2xl border border-[#F04423]/20 bg-white px-6 py-14 text-center shadow-sm">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423] shadow-sm">
                 <PackageCheck size={28} />
               </div>
@@ -81,19 +81,19 @@ export default function CartPage() {
                 checkout.
               </p>
               <Link
-                href="/#products"
+                href="/all-peptides"
                 className="mt-6 inline-flex rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
               >
                 Browse products
               </Link>
             </div>
           ) : (
-            <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
+            <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
               <div className="space-y-4">
                 {items.map((item) => (
                   <article
                     key={item.id}
-                    className="grid gap-5 overflow-hidden rounded-md border border-[#E5E5E5] bg-white p-4 shadow-sm transition hover:border-[#F04423]/50 hover:shadow-md sm:grid-cols-[132px_1fr_auto]"
+                    className="grid gap-5 overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm transition hover:border-[#F04423]/50 hover:shadow-md sm:grid-cols-[132px_1fr_auto]"
                   >
                     <div className="flex h-[132px] items-center justify-center rounded-md border border-[#F04423]/10 bg-[#FFF8F5]">
                       <Image
@@ -168,7 +168,7 @@ export default function CartPage() {
                 ))}
               </div>
 
-              <aside className="h-fit overflow-hidden rounded-md border border-[#F04423]/20 bg-white shadow-sm lg:sticky lg:top-28">
+              <aside className="h-fit overflow-hidden rounded-2xl border border-[#F04423]/20 bg-white shadow-md lg:sticky lg:top-28">
                 <div className="bg-[#111827] p-6 text-white">
                   <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#F04423] text-white">
@@ -216,7 +216,7 @@ export default function CartPage() {
 
                 <Link
                   href="/checkout"
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
                 >
                   Checkout <ArrowRight size={17} />
                 </Link>

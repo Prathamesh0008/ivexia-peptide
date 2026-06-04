@@ -18,35 +18,31 @@ const productsByCategory = products.reduce<Record<string, Product[]>>(
 
 export default function ProductSidebar() {
   return (
-    <aside className="hidden lg:block">
-      <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-4">
-        <div className="space-y-8">
-          {Object.entries(productsByCategory).map(([category, items]) => (
-            <section key={category}>
-              <h4 className="mb-5 text-[20px] font-bold text-[#F04423]">
-                {category}
-              </h4>
+    <aside className="hidden space-y-10 border-r border-[#E5E5E5] pr-4 text-sm lg:block">
+      {Object.entries(productsByCategory).map(([category, items]) => (
+        <section key={category}>
+          <h4 className="mb-3 text-lg font-semibold tracking-wide text-[#F04423]">
+            {category}
+          </h4>
 
-              <ul className="space-y-4">
-                {items.map((product, index) => {
-                  const productKey = product.slug || product.id;
+          <ul className="space-y-1.5">
+            {items.map((product, index) => {
+              const productKey = product.slug || product.id;
 
-                  return (
-                    <li key={`${productKey}-${index}`}>
-                      <Link
-                        href={`/products/${productKey}`}
-                        className="block text-[16px] font-normal leading-[1.4] text-black transition hover:text-[#F04423]"
-                      >
-                        {product.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          ))}
-        </div>
-      </div>
+              return (
+                <li key={`${productKey}-${index}`}>
+                  <Link
+                    href={`/products/${productKey}`}
+                    className="block text-[14px] font-normal leading-5 text-[#56585C] transition hover:text-[#F04423]"
+                  >
+                    {product.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
     </aside>
   );
 }

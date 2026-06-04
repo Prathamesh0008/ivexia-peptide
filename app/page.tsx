@@ -11,10 +11,14 @@ export default function Home() {
       <Navbar />
       <HeroSection />
 
-      <section id="products" className="bg-white px-5 py-10 sm:px-8 lg:px-10">
-        <div className="mx-auto grid max-w-[1680px] gap-10 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <ProductSidebar />
-          <ProductGrid />
+      <section id="products" className="bg-white px-4 py-12 sm:px-6">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-4">
+          <div className="lg:col-span-1">
+            <ProductSidebar />
+          </div>
+          <div className="lg:col-span-3">
+            <ProductGrid />
+          </div>
         </div>
       </section>
 

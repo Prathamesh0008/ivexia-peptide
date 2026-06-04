@@ -32,9 +32,9 @@ export default async function AccountPage() {
     <main className="min-h-screen bg-white text-[#090909]">
       <Navbar />
 
-      <section className="border-b border-[#E5E5E5] bg-[linear-gradient(180deg,#FFF2EF_0%,#FAFAFA_44%,#FFFFFF_100%)] px-5 py-12 sm:px-8 lg:px-10">
-        <div className="mx-auto max-w-[1280px]">
-          <div className="overflow-hidden rounded-md border border-[#F04423]/20 bg-white shadow-sm">
+      <section className="border-b border-[#E5E5E5] bg-gradient-to-br from-white via-[#fff7f4] to-white px-4 py-12 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="overflow-hidden rounded-2xl border border-[#F04423]/20 bg-white shadow-xl">
             <div className="bg-[#111827] px-6 py-6 text-white sm:px-8">
               <p className="inline-flex rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                 Account dashboard
@@ -86,7 +86,7 @@ export default async function AccountPage() {
               icon={PackageCheck}
               title="Product access"
               text="Browse research-use-only peptide product information and details."
-              href="/#products"
+              href="/all-peptides"
               cta="View products"
             />
 
@@ -108,7 +108,7 @@ export default async function AccountPage() {
           </div>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-            <section className="rounded-md border border-[#E5E5E5] bg-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-[#E5E5E5] bg-white p-6 shadow-xl">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423]">
                   <PackageCheck size={22} />
@@ -126,14 +126,14 @@ export default async function AccountPage() {
                 order creation.
               </div>
               <Link
-                href="/#products"
+                href="/all-peptides"
                 className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
               >
                 View products <ArrowRight size={17} />
               </Link>
             </section>
 
-            <section className="overflow-hidden rounded-md border border-[#F04423]/20 bg-white shadow-sm">
+            <section className="overflow-hidden rounded-2xl border border-[#F04423]/20 bg-white shadow-xl">
               <div className="bg-[#111827] p-6 text-white">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#F04423] text-white">
@@ -196,7 +196,7 @@ function ActionCard({
   title: string;
 }) {
   return (
-    <section className="rounded-md border border-[#E5E5E5] bg-white p-5 shadow-sm transition hover:border-[#F04423]/50 hover:shadow-md">
+    <section className="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm transition hover:border-[#F04423]/50 hover:shadow-md">
       <div className="flex h-11 w-11 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423]">
         <Icon size={22} />
       </div>

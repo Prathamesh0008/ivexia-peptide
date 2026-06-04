@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FloatingProductButton from "@/components/FloatingProductButton";
 import GlobalProductSidebar from "@/components/GlobalProductSidebar";
 import Providers from "@/components/Providers";
 import "./globals.css";
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased" data-scroll-behavior="smooth">
       <body className="min-h-full flex flex-col">
         <Providers>
+          <FloatingProductButton />
           <GlobalProductSidebar />
           {children}
         </Providers>

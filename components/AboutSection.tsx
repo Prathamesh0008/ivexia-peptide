@@ -37,30 +37,27 @@ export default function AboutSection() {
   const t = (key: string, fallback: string) => navigation[key] || fallback;
 
   return (
-    <section id="about" className="bg-[#F7F7F7] px-5 sm:px-8 lg:px-10">
-      <div className="mx-auto grid max-w-[1280px] lg:grid-cols-2">
-        <div className="py-16 pr-0 md:pr-10 lg:pr-16">
-          <h2 className="mb-12 text-4xl font-black md:text-5xl">
+    <section id="about" className="border-t border-[#E5E5E5] bg-white px-4 py-16 sm:px-6">
+      <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-2">
+        <div className="space-y-12 text-sm text-[#56585C]">
+          <h2 className="text-3xl font-bold text-[#090909]">
             {t("aboutTitle", "About Ivexia Peptide")}
           </h2>
 
-          <div className="space-y-10">
+          <div className="space-y-12">
             {blocks.map((block) => {
               const Icon = block.icon;
 
               return (
-                <div
-                  key={block.titleKey}
-                  className="border-b border-[#E5E5E5] pb-9"
-                >
-                  <div className="flex gap-6">
-                    <Icon className="mt-1 text-[#F04423]" size={34} />
+                <div key={block.titleKey} className="border-b border-[#E5E5E5] pb-8 last:border-b-0">
+                  <div className="flex gap-3">
+                    <Icon className="mt-1 text-[#F04423]" size={20} />
 
                     <div>
-                      <h3 className="text-xl font-black">
+                      <h3 className="text-lg font-semibold text-[#090909]">
                         {t(block.titleKey, block.titleFallback)}
                       </h3>
-                      <p className="mt-4 max-w-2xl text-lg leading-8 text-[#090909]">
+                      <p className="mt-3 max-w-2xl leading-relaxed">
                         {t(block.textKey, block.textFallback)}
                       </p>
                     </div>
@@ -71,7 +68,7 @@ export default function AboutSection() {
           </div>
         </div>
 
-        <div className="relative min-h-[520px] lg:min-h-full">
+        <div className="relative min-h-[420px] overflow-hidden rounded-xl shadow-lg md:min-h-[650px]">
           <Image
             src="/abaut.png.jpg"
             alt="Ivexia Peptide laboratory"
@@ -79,15 +76,7 @@ export default function AboutSection() {
             sizes="(min-width: 1024px) 640px, 100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-            {/* <Image
-              src="/images/logo-icon.png"
-              alt="Ivexia icon"
-              width={260}
-              height={260}
-              className="opacity-90"
-            /> */}
-          </div>
+          <div className="absolute inset-0 bg-black/10" />
         </div>
       </div>
     </section>

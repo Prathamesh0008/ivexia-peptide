@@ -126,7 +126,7 @@ export default async function SignInPage({
                   />
                   Remember me
                 </label>
-                <Link href="#" className="font-medium text-[#F04423]">
+                <Link href="/forgot-password" className="font-medium text-[#F04423]">
                   Forgot password?
                 </Link>
               </div>
@@ -141,7 +141,7 @@ export default async function SignInPage({
 
             <p className="mt-6 text-sm text-[#56585C]">
               New to Ivexia?{" "}
-              <Link href="#" className="font-medium text-[#F04423]">
+              <Link href="/register" className="font-medium text-[#F04423]">
                 Create an account
               </Link>
             </p>

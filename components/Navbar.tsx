@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   Menu,
@@ -11,6 +12,8 @@ import {
 import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { useLanguage } from "@/components/LanguageProvider";
+import { PRODUCTS } from "@/data/products.js";
+import type { Product } from "@/data/productTypes";
 
 type LanguageCode =
   | "EN" | "AR" | "DE" | "ES" | "NL" | "PT" | "JA" | "ZH"
@@ -23,11 +26,16 @@ type LanguageOption = {
 };
 
 const navLinks = [
-  { href: "/#all-peptides", key: "allPeptides", fallback: "All Peptides" },
-  { href: "/#popular-peptides", key: "popularPeptides", fallback: "Popular Peptides" },
-  { href: "/#bundle-save", key: "bundleSave", fallback: "Bundle & Save" },
+  { href: "/all-peptides", key: "allPeptides", fallback: "All Peptides" },
+  { href: "/popular-peptides", key: "popularPeptides", fallback: "Popular Peptides" },
+  { href: "/bundle-save", key: "bundleSave", fallback: "Bundle & Save" },
   { href: "/peptide-research", key: "peptideResearch", fallback: "Peptide Research" },
   { href: "/peptide-information", key: "peptideInformation", fallback: "Peptide Information" },
+];
+
+const secondaryLinks = [
+  { href: "/about", key: "ourCompany", fallback: "Our Company" },
+  { href: "/contact", key: "contactUs", fallback: "Contact Us" },
 ];
 
 const languageOptions: LanguageOption[] = [
@@ -51,8 +59,11 @@ const languageOptions: LanguageOption[] = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const { itemCount } = useCart();
   const { currentLanguage, setLanguage, translations } = useLanguage();
@@ -64,6 +75,18 @@ export default function Navbar() {
     languageOptions[0];
 
   const t = (key: string, fallback: string) => navigation[key] || fallback;
+  const products = PRODUCTS as Product[];
+  const suggestions = searchQuery.trim()
+    ? products
+        .filter((product) => {
+          const query = searchQuery.toLowerCase();
+          return (
+            product.name?.toLowerCase().includes(query) ||
+            product.category?.toLowerCase().includes(query)
+          );
+        })
+        .slice(0, 6)
+    : [];
 
   const changeLanguage = (code: LanguageCode) => {
     setLanguage(code);
@@ -71,12 +94,22 @@ export default function Navbar() {
     setOpen(false);
   };
 
+  const submitSearch = () => {
+    const query = searchQuery.trim();
+
+    if (!query) return;
+
+    router.push(`/search?query=${encodeURIComponent(query)}`);
+    setSearchFocused(false);
+    setOpen(false);
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="mx-auto flex min-h-[98px] w-full max-w-[1600px] items-center justify-between gap-8 px-5 sm:px-8 lg:px-10">
+    <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-white">
+      <div className="mx-auto flex min-h-[104px] w-full max-w-[1660px] items-center justify-between gap-7 px-4 sm:px-6 lg:px-16 xl:px-24 2xl:px-32">
         <Link
           href="/"
-          className="h-auto w-[210px] max-w-none sm:w-[260px] lg:w-[310px]"
+          className="flex h-16 shrink-0 items-center"
         >
           <Image
             src="/Ivexia_Peptide.png"
@@ -84,17 +117,38 @@ export default function Navbar() {
             width={420}
             height={110}
             priority
-            className="-ml-[22px] h-auto w-[240px] max-w-none sm:-ml-[28px] sm:w-[300px] lg:-ml-[34px] lg:w-[350px]"
+            className="h-17 w-auto max-w-[310px] object-contain"
           />
         </Link>
 
         <div className="hidden flex-1 lg:block">
-          <div className="mx-auto flex h-[48px] w-full max-w-[1040px] items-center rounded-[8px] border border-[#C7C7C7] px-5">
-            <Search size={18} strokeWidth={2} className="text-[#575B61]" />
+          <div className="relative mx-auto flex h-[60px] w-full max-w-[850px] items-center rounded-lg border border-[#C7C7C7] bg-white px-6 focus-within:ring-2 focus-within:ring-[#F04423]/20">
+            <button type="button" onClick={submitSearch} aria-label="Search">
+              <Search size={22} strokeWidth={2} className="text-[#575B61]" />
+            </button>
             <input
-              className="ml-4 w-full text-[18px] leading-none text-[#24272B] outline-none placeholder:text-[#4B5563]"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") submitSearch();
+              }}
+              className="ml-5 w-full text-[16px] leading-none text-[#24272B] outline-none placeholder:text-[#4B5563]"
               placeholder={t("search", "Search")}
             />
+
+            {searchFocused && (
+              <SearchSuggestions
+                query={searchQuery}
+                suggestions={suggestions}
+                onKeyword={(keyword) => {
+                  setSearchQuery(keyword);
+                  router.push(`/search?query=${encodeURIComponent(keyword)}`);
+                  setSearchFocused(false);
+                }}
+              />
+            )}
           </div>
         </div>
 
@@ -134,34 +188,30 @@ export default function Navbar() {
         </button>
       </div>
 
-      <nav className="hidden h-[44px] px-5 sm:px-8 lg:block lg:px-16">
-        <div className="mx-auto flex h-full w-full max-w-[1700px] items-center justify-between">
-          <div className="flex items-center gap-[30px]">
+      <nav className="hidden h-[66px] px-4 sm:px-6 lg:block lg:px-16 xl:px-24 2xl:px-32">
+        <div className="mx-auto flex h-full w-full max-w-[1660px] items-center justify-between overflow-hidden">
+          <div className="flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
-                className="text-[15px] font-normal text-[#06101F]"
+                className="text-[18px] font-normal text-[#06101F] transition hover:text-[#F04423]"
               >
                 {t(link.key, link.fallback)}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-[30px]">
-            <Link
-              href="/#about"
-              className="text-[15px] font-normal text-[#06101F] hover:text-[#F04423]"
-            >
-              {t("ourCompany", "Our Company")}
-            </Link>
-
-            <Link
-              href="/contact"
-              className="text-[15px] font-normal text-[#06101F] hover:text-[#F04423]"
-            >
-              {t("contactUs", "Contact Us")}
-            </Link>
+          <div className="flex items-center gap-12">
+            {secondaryLinks.map((link) => (
+              <Link
+                key={link.key}
+                href={link.href}
+                className="text-[18px] font-normal text-[#06101F] transition hover:text-[#F04423]"
+              >
+                {t(link.key, link.fallback)}
+              </Link>
+            ))}
           </div>
         </div>
       </nav>
@@ -169,8 +219,15 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-[#E5E5E5] bg-white px-5 py-5 lg:hidden">
           <div className="mb-5 flex items-center rounded-md border border-[#E5E5E5] px-4 py-3">
-            <Search size={18} />
+            <button type="button" onClick={submitSearch} aria-label="Search">
+              <Search size={18} />
+            </button>
             <input
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") submitSearch();
+              }}
               className="ml-3 w-full text-sm outline-none"
               placeholder={t("search", "Search")}
             />
@@ -197,8 +254,7 @@ export default function Navbar() {
 
             {[
               ...navLinks,
-              { href: "/#about", key: "ourCompany", fallback: "Our Company" },
-              { href: "/contact", key: "contactUs", fallback: "Contact Us" },
+              ...secondaryLinks,
             ].map((link) => (
               <Link
                 key={link.key}
@@ -213,6 +269,64 @@ export default function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+function SearchSuggestions({
+  onKeyword,
+  query,
+  suggestions,
+}: {
+  onKeyword: (keyword: string) => void;
+  query: string;
+  suggestions: Product[];
+}) {
+  const popularKeywords = ["BPC-157", "TB-500", "GHRP-2", "CJC-1295", "GHK-Cu"];
+
+  return (
+    <div className="absolute left-0 top-full z-[1000] mt-2 w-full rounded-2xl border border-[#E5E5E5] bg-white p-4 shadow-xl">
+      {query.trim() === "" ? (
+        <>
+          <p className="mb-2 text-xs font-semibold text-[#6B7280]">
+            Popular Keywords
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {popularKeywords.map((keyword) => (
+              <button
+                key={keyword}
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => onKeyword(keyword)}
+                className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs text-[#374151] hover:bg-[#FFF2EF] hover:text-[#F04423]"
+              >
+                {keyword}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : suggestions.length > 0 ? (
+        <div className="space-y-2">
+          {suggestions.map((product) => {
+            const productKey = product.slug || product.id;
+
+            return (
+              <Link
+                key={productKey}
+                href={`/products/${productKey}`}
+                className="block rounded-lg px-3 py-2 text-sm text-[#374151] hover:bg-[#FFF2EF] hover:text-[#F04423]"
+              >
+                <span className="font-semibold">{product.name}</span>
+                {product.category && (
+                  <span className="ml-2 text-xs text-[#6B7280]">{product.category}</span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-sm text-[#6B7280]">No products found.</p>
+      )}
+    </div>
   );
 }
 
