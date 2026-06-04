@@ -1,0 +1,20 @@
+export type Product = {
+  id: string;
+  name: string;
+  strength: string;
+  purity: string;
+  description?: string;
+  applications?: string[];
+  appearance?: string;
+  badge?: string;
+  cas?: string;
+  category?: string;
+  coaImages?: string[];
+  descriptionImages?: string[];
+  image?: string;
+  price?: number;
+  researchStatus?: string;
+  size?: string;
+  slug?: string;
+  storage?: string;
+};
