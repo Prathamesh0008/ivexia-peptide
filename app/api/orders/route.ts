@@ -1,3 +1,4 @@
+//app\api\orders\route.ts
 import clientPromise from "@/lib/mongodb";
 
 type CheckoutItem = {
@@ -85,11 +86,11 @@ export async function POST(request: Request) {
       customer: payload.customer,
       items: payload.items,
       payment: {
-        cardLast4: payload.payment.cardLast4,
+        cardLast4: payload.payment?.cardLast4 || "0000",
         provider: "demo",
-        status: payload.payment.status,
+        status: payload.payment?.status || "pending",
       },
-      status: "paid",
+      status: "placed",
       totals: payload.totals,
       createdAt: now,
       updatedAt: now,
@@ -98,6 +99,8 @@ export async function POST(request: Request) {
     return Response.json({
       id: result.insertedId.toString(),
       orderNumber,
+      createdAt: now.toISOString(),
+      status: "placed",
       total: payload.totals.total,
     });
   } catch (error) {

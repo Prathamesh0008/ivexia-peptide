@@ -1,22 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import {
-  ArrowLeft,
-  BadgeCheck,
-  CreditCard,
-  Loader2,
-  LockKeyhole,
-  PackageCheck,
-  ShieldCheck,
-  Truck,
-  UserRound,
-} from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 
 const ORDER_STORAGE_KEY = "ivexia_last_order";
 
@@ -27,92 +17,61 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-function normalizeCardNumber(value: string) {
-  return value.replace(/\D/g, "");
-}
-
 export default function CheckoutPage() {
+  const { items, subtotal, clearCart } = useCart();
   const router = useRouter();
-  const { clearCart, items, subtotal } = useCart();
-  const [error, setError] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const shipping = subtotal > 0 ? 18 : 0;
   const tax = subtotal * 0.0825;
   const total = subtotal + shipping + tax;
 
-  async function handlePayment(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
-    if (items.length === 0) {
-      setError("Your cart is empty.");
-      return;
-    }
+    const formData = new FormData(e.currentTarget);
 
-    const formData = new FormData(event.currentTarget);
-    const cardNumber = normalizeCardNumber(String(formData.get("cardNumber")));
-    const expiry = String(formData.get("expiry") || "").trim();
-    const cvv = String(formData.get("cvv") || "").trim();
-
-    if (cardNumber.length < 12 || cardNumber.length > 19) {
-      setError("Please enter a valid card number.");
-      return;
-    }
-
-    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
-      setError("Please enter expiry as MM/YY.");
-      return;
-    }
-
-    if (!/^\d{3,4}$/.test(cvv)) {
-      setError("Please enter a valid CVV.");
-      return;
-    }
-
-    setError("");
-    setIsProcessing(true);
+    const payload = {
+      customer: {
+        name: String(formData.get("name") || ""),
+        company: String(formData.get("company") || ""),
+        email: String(formData.get("email") || ""),
+        phone: String(formData.get("phone") || ""),
+        address: String(formData.get("address") || ""),
+        city: String(formData.get("city") || ""),
+        state: String(formData.get("state") || ""),
+        zip: String(formData.get("zip") || ""),
+        country: String(formData.get("country") || ""),
+      },
+      items,
+      payment: {
+        cardLast4: "0000",
+        status: "pending",
+      },
+      totals: {
+        subtotal,
+        shipping,
+        tax,
+        total,
+      },
+    };
 
     try {
-      const response = await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          customer: {
-            address: String(formData.get("address") || "").trim(),
-            city: String(formData.get("city") || "").trim(),
-            company: String(formData.get("company") || "").trim(),
-            country: String(formData.get("country") || "").trim(),
-            email: String(formData.get("email") || "").trim(),
-            name: String(formData.get("name") || "").trim(),
-            phone: String(formData.get("phone") || "").trim(),
-            state: String(formData.get("state") || "").trim(),
-            zip: String(formData.get("zip") || "").trim(),
-          },
-          items,
-          payment: {
-            cardLast4: cardNumber.slice(-4),
-            status: "authorized",
-          },
-          totals: {
-            subtotal,
-            shipping,
-            tax,
-            total,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const data = (await response.json()) as {
-        id?: string;
-        message?: string;
-        orderNumber?: string;
-        total?: number;
-      };
+      const data = await res.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Unable to process payment.");
+      if (!res.ok) {
+        throw new Error(data.message || "Order failed");
       }
 
       window.localStorage.setItem(
@@ -120,24 +79,25 @@ export default function CheckoutPage() {
         JSON.stringify({
           databaseId: data.id,
           id: data.orderNumber,
-          items,
-          subtotal,
-          shipping,
-          tax,
-          total: data.total ?? total,
-          createdAt: new Date().toISOString(),
+          createdAt: data.createdAt,
+          customer: payload.customer,
+          items: payload.items,
+          status: data.status,
+          total: payload.totals.total,
+          totals: payload.totals,
         }),
       );
 
       clearCart();
       router.push("/checkout/success");
-    } catch (paymentError) {
-      setError(
-        paymentError instanceof Error
-          ? paymentError.message
-          : "Unable to process payment.",
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to place order. Please try again."
       );
-      setIsProcessing(false);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -145,222 +105,131 @@ export default function CheckoutPage() {
     <main className="min-h-screen bg-white text-[#090909]">
       <Navbar />
 
-      <section className="border-b border-[#E5E5E5] bg-gradient-to-br from-white via-[#fff7f4] to-white px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-7xl">
-          <div className="rounded-2xl border border-[#F04423]/15 bg-white/90 p-6 shadow-sm">
+      <section className="border-b border-[#E5E5E5] px-4 py-10 sm:px-6 lg:py-14">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="mb-8">
             <Link
               href="/cart"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#56585C] transition hover:text-[#F04423]"
+              className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-[#56585C] hover:text-[#F04423]"
             >
               <ArrowLeft size={16} />
-              Back to cart
+              Back to Cart
             </Link>
-            <p className="mt-6 inline-flex rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-              Checkout
+
+            <h1 className="text-[34px] font-bold text-black">Checkout</h1>
+            <p className="mt-2 text-sm text-[#56585C]">
+              Complete your details to place your order.
             </p>
-            <h1 className="mt-4 text-3xl font-semibold text-[#111827] md:text-4xl">
-              Complete payment
-            </h1>
-            <p className="mt-3 max-w-[620px] text-sm leading-6 text-[#56585C]">
-              Enter customer, shipping, and payment details to create the order
-              in MongoDB.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3 text-xs font-semibold">
-              <span className="inline-flex items-center gap-2 rounded-md bg-[#EEFDF3] px-3 py-2 text-[#176B2C]">
-                <BadgeCheck size={15} /> MongoDB order save
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-md bg-[#FFF8E6] px-3 py-2 text-[#8A5A00]">
-                <LockKeyhole size={15} /> Demo secure payment
-              </span>
-            </div>
           </div>
 
-          {items.length === 0 ? (
-            <div className="mt-8 rounded-2xl border border-[#F04423]/20 bg-white px-6 py-14 text-center shadow-sm">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423] shadow-sm">
-                <PackageCheck size={28} />
-              </div>
-              <h2 className="mt-5 text-2xl font-semibold text-[#111827]">
-                No items to checkout
+          {items.length === 0 && !message ? (
+            <div className="rounded-xl border border-[#E5E5E5] px-6 py-14 text-center">
+              <h2 className="text-2xl font-semibold text-black">
+                Your cart is empty
               </h2>
+
+              <p className="mx-auto mt-3 max-w-[420px] text-sm leading-6 text-[#56585C]">
+                Add products before continuing to checkout.
+              </p>
+
               <Link
                 href="/all-peptides"
                 className="mt-6 inline-flex rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
               >
-                Browse products
+                Browse Products
               </Link>
             </div>
           ) : (
-            <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
-              <form
-                onSubmit={handlePayment}
-                className="overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white shadow-md sm:p-0"
-              >
-                <div className="bg-[#111827] px-6 py-5 text-white sm:px-8">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#F04423]">
-                    Order details
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold">
-                    Checkout information
-                  </h2>
-                </div>
-                <div className="p-6 sm:p-8">
-                {error && (
-                  <div className="mb-6 rounded-md border border-[#F04423]/30 bg-[#FFF2EF] px-4 py-3 text-sm text-[#B52B13]">
-                    {error}
+            <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {message && (
+                  <div className="rounded-lg border border-[#E5E5E5] bg-[#F7F7F7] p-4 text-sm font-semibold text-black">
+                    {message}
                   </div>
                 )}
 
-                <section>
-                  <SectionTitle
-                    icon={UserRound}
-                    eyebrow="Step 1"
-                    title="Contact information"
-                  />
-                  <div className="mt-5 grid gap-4 rounded-md bg-[#FAFAFA] p-4 sm:grid-cols-2">
-                    <Input label="Full name" name="name" autoComplete="name" />
-                    <Input
-                      label="Email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                    />
-                    <Input
-                      label="Phone"
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                    />
-                    <Input
-                      label="Company / lab"
-                      name="company"
-                      autoComplete="organization"
-                    />
-                  </div>
-                </section>
+                <div className="rounded-xl border border-[#E5E5E5] p-6">
+                  <h2 className="text-xl font-semibold text-black">
+                    Contact Information
+                  </h2>
 
-                <section className="mt-8 border-t border-[#E5E5E5] pt-8">
-                  <SectionTitle
-                    icon={Truck}
-                    eyebrow="Step 2"
-                    title="Shipping address"
-                  />
-                  <div className="mt-5 grid gap-4 rounded-md bg-[#FAFAFA] p-4 sm:grid-cols-2">
-                    <Input
-                      label="Address"
-                      name="address"
-                      autoComplete="street-address"
-                      className="sm:col-span-2"
-                    />
-                    <Input label="City" name="city" autoComplete="address-level2" />
-                    <Input label="State" name="state" autoComplete="address-level1" />
-                    <Input
-                      label="ZIP code"
-                      name="zip"
-                      autoComplete="postal-code"
-                    />
-                    <Input
-                      label="Country"
-                      name="country"
-                      defaultValue="United States"
-                      autoComplete="country-name"
-                    />
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <Input name="name" label="Full Name" required />
+                    <Input name="company" label="Company" />
+                    <Input name="email" label="Email Address" type="email" required />
+                    <Input name="phone" label="Phone Number" required />
                   </div>
-                </section>
+                </div>
 
-                <section className="mt-8 border-t border-[#E5E5E5] pt-8">
-                  <SectionTitle icon={CreditCard} eyebrow="Step 3" title="Payment" />
-                  <div className="mt-5 grid gap-4 rounded-md bg-[#FAFAFA] p-4 sm:grid-cols-2">
-                    <Input
-                      label="Card number"
-                      name="cardNumber"
-                      inputMode="numeric"
-                      placeholder="4242 4242 4242 4242"
-                      className="sm:col-span-2"
-                    />
-                    <Input
-                      label="Expiry"
-                      name="expiry"
-                      placeholder="MM/YY"
-                      inputMode="numeric"
-                    />
-                    <Input
-                      label="CVV"
-                      name="cvv"
-                      placeholder="123"
-                      inputMode="numeric"
-                    />
+                <div className="rounded-xl border border-[#E5E5E5] p-6">
+                  <h2 className="text-xl font-semibold text-black">
+                    Shipping Address
+                  </h2>
+
+                  <div className="mt-5 grid gap-4">
+                    <Input name="address" label="Address" required />
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Input name="city" label="City" required />
+                      <Input name="state" label="State" required />
+                      <Input name="zip" label="ZIP Code" required />
+                      <Input name="country" label="Country" required />
+                    </div>
                   </div>
-                </section>
+                </div>
 
                 <button
                   type="submit"
-                  disabled={isProcessing}
-                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18] disabled:cursor-wait disabled:opacity-80"
+                  disabled={loading}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isProcessing ? (
-                    <Loader2 className="animate-spin" size={18} />
-                  ) : (
-                    <ShieldCheck size={18} />
-                  )}
-                  {isProcessing ? "Processing payment..." : `Pay ${formatCurrency(total)}`}
+                  {loading ? "Placing Order..." : "Place Order"}
+                  <ArrowRight size={16} />
                 </button>
-                </div>
               </form>
 
-              <aside className="h-fit overflow-hidden rounded-2xl border border-[#F04423]/20 bg-white shadow-md lg:sticky lg:top-28">
-                <div className="bg-[#111827] p-6 text-white">
-                  <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#F04423] text-white">
-                    <LockKeyhole size={22} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold">
-                      Order summary
-                    </h2>
-                    <p className="mt-1 text-xs text-white/70">
-                      Demo payment authorization
-                    </p>
-                  </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                <div className="space-y-4">
+              <aside className="h-fit rounded-xl border border-[#E5E5E5] bg-white p-6 lg:sticky lg:top-28">
+                <h2 className="text-xl font-semibold text-black">
+                  Order Summary
+                </h2>
+
+                <div className="mt-5 space-y-4 border-b border-[#E5E5E5] pb-5">
                   {items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="rounded-md border border-[#E5E5E5] bg-[#FAFAFA] p-3 text-sm"
-                    >
-                      <div className="flex justify-between gap-4">
+                    <div key={item.id} className="flex justify-between gap-4">
                       <div>
-                        <p className="font-medium text-[#111827]">{item.name}</p>
-                        <p className="mt-1 text-[#56585C]">Qty {item.quantity}</p>
+                        <p className="text-sm font-semibold text-black">
+                          {item.name}
+                        </p>
+                        <p className="mt-1 text-xs text-[#56585C]">
+                          Qty: {item.quantity}
+                        </p>
                       </div>
-                      <p className="font-semibold text-[#111827]">
+
+                      <p className="text-sm font-semibold text-black">
                         {formatCurrency(item.price * item.quantity)}
                       </p>
-                      </div>
                     </div>
                   ))}
                 </div>
-                <dl className="mt-6 space-y-4 border-t border-[#E5E5E5] pt-5 text-sm">
-                  <SummaryLine label="Subtotal" value={subtotal} />
-                  <SummaryLine label="Shipping" value={shipping} />
-                  <SummaryLine label="Estimated tax" value={tax} />
-                  <div className="rounded-md bg-[#FFF2EF] px-4 py-3">
-                    <div className="flex justify-between text-lg">
-                    <dt className="font-semibold text-[#111827]">Total</dt>
-                    <dd className="font-semibold text-[#F04423]">
+
+                <dl className="mt-5 space-y-4 text-sm">
+                  <Row label="Subtotal" value={formatCurrency(subtotal)} />
+                  <Row label="Shipping" value={formatCurrency(shipping)} />
+
+                  <div className="flex justify-between border-b border-[#E5E5E5] pb-4">
+                    <dt className="text-[#56585C]">Estimated Tax</dt>
+                    <dd className="font-semibold text-black">
+                      {formatCurrency(tax)}
+                    </dd>
+                  </div>
+
+                  <div className="flex justify-between text-lg">
+                    <dt className="font-bold text-black">Total</dt>
+                    <dd className="font-bold text-[#F04423]">
                       {formatCurrency(total)}
                     </dd>
-                    </div>
                   </div>
                 </dl>
-                <div className="mt-6 rounded-md bg-[#EEFDF3] p-4 text-xs leading-5 text-[#176B2C]">
-                  Card details are used for this demo flow only. Successful
-                  orders are saved to MongoDB.
-                </div>
-                </div>
               </aside>
             </div>
           )}
@@ -372,52 +241,29 @@ export default function CheckoutPage() {
   );
 }
 
-function SectionTitle({
-  eyebrow,
-  icon: Icon,
-  title,
-}: {
-  eyebrow: string;
-  icon: React.ElementType;
-  title: string;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423]">
-        <Icon size={21} />
-      </div>
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.16em] text-[#F04423]">
-          {eyebrow}
-        </p>
-        <h2 className="mt-1 text-xl font-medium text-[#111827]">{title}</h2>
-      </div>
-    </div>
-  );
-}
-
 function Input({
-  className = "",
   label,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
-    <label className={className}>
-      <span className="text-sm font-medium text-[#111827]">{label}</span>
+    <label className="block">
+      <span className="mb-2 block text-sm font-semibold text-black">
+        {label}
+      </span>
+
       <input
         {...props}
-        required
-        className="mt-2 w-full rounded-md border border-[#CFCFCF] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#F04423] focus:ring-2 focus:ring-[#F04423]/10"
+        className="h-11 w-full rounded-md border border-[#D1D5DB] px-4 text-sm text-black outline-none transition placeholder:text-[#9CA3AF] focus:border-[#F04423]"
       />
     </label>
   );
 }
 
-function SummaryLine({ label, value }: { label: string; value: number }) {
+function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
       <dt className="text-[#56585C]">{label}</dt>
-      <dd className="font-semibold text-[#111827]">{formatCurrency(value)}</dd>
+      <dd className="font-semibold text-black">{value}</dd>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+//app\about\page.tsx
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -124,16 +125,16 @@ export default function AboutPage() {
               </div>
 
               <div
-                className={`relative flex h-[240px] w-full items-center justify-center overflow-hidden rounded-xl bg-[#FFF7F4] sm:h-[320px] lg:h-[360px] ${
-                  index % 2 !== 0 ? "lg:order-1" : ""
-                }`}
+               className={`relative flex h-[220px] w-full max-w-[460px] items-center justify-center overflow-hidden rounded-xl bg-[#FFF7F4] sm:h-[260px] lg:h-[300px] ${
+  index % 2 !== 0 ? "lg:order-1 lg:justify-self-start" : "lg:justify-self-end"
+}`}
               >
                 <Image
                   src={country.image}
                   alt={country.heading}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover lg:object-contain"
+                  className="object-cover lg:object-cover"
                 />
               </div>
             </section>
@@ -174,12 +175,12 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="relative h-[360px] overflow-hidden rounded-xl bg-[#FFF7F4]">
+          <div className="relative h-[300px] max-w-[460px] overflow-hidden rounded-xl bg-[#FFF7F4] lg:justify-self-end">
             <Image
               src="/abaut.png.jpg"
               alt="Lab research"
               fill
-              className="object-contain"
+              className="object-cover"
             />
           </div>
         </section>

@@ -2,16 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Minus,
-  PackageCheck,
-  Plus,
-  ShieldCheck,
-  Trash2,
-  Truck,
-} from "lucide-react";
+import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -25,6 +16,7 @@ function formatCurrency(value: number) {
 
 export default function CartPage() {
   const { clearCart, items, removeItem, subtotal, updateQuantity } = useCart();
+
   const shipping = subtotal > 0 ? 18 : 0;
   const tax = subtotal * 0.0825;
   const total = subtotal + shipping + tax;
@@ -33,197 +25,181 @@ export default function CartPage() {
     <main className="min-h-screen bg-white text-[#090909]">
       <Navbar />
 
-      <section className="border-b border-[#E5E5E5] bg-gradient-to-br from-white via-[#fff7f4] to-white px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-5 rounded-2xl border border-[#F04423]/15 bg-white/90 p-6 shadow-sm sm:flex-row sm:items-end">
+      <section className="border-b border-[#E5E5E5] px-4 py-10 sm:px-6 lg:py-14">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="inline-flex rounded-md bg-[#F04423] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-                Shopping cart
+              <h1 className="text-[34px] font-bold text-black">Shopping Cart</h1>
+              <p className="mt-2 text-sm text-[#56585C]">
+                Review your selected products before checkout.
               </p>
-              <h1 className="mt-4 text-3xl font-semibold text-[#111827] md:text-4xl">
-                Review your cart
-              </h1>
-              <p className="mt-3 max-w-[560px] text-sm leading-6 text-[#56585C]">
-                Confirm product quantities before moving to secure checkout.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3 text-xs font-semibold">
-                <span className="inline-flex items-center gap-2 rounded-md bg-[#EEFDF3] px-3 py-2 text-[#176B2C]">
-                  <CheckCircle2 size={15} /> Cart saved locally
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-md bg-[#FFF8E6] px-3 py-2 text-[#8A5A00]">
-                  <Truck size={15} /> Fast order review
-                </span>
-              </div>
             </div>
 
             {items.length > 0 && (
               <button
                 type="button"
                 onClick={clearCart}
-                className="inline-flex items-center gap-2 rounded-md border border-[#F04423]/30 bg-white px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:border-[#F04423] hover:text-[#F04423]"
+                className="w-fit text-sm font-semibold text-[#F04423] hover:text-[#D93A18]"
               >
-                <Trash2 size={16} />
-                Clear cart
+                Clear Cart
               </button>
             )}
           </div>
 
           {items.length === 0 ? (
-            <div className="mt-8 rounded-2xl border border-[#F04423]/20 bg-white px-6 py-14 text-center shadow-sm">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-[#FFF2EF] text-[#F04423] shadow-sm">
-                <PackageCheck size={28} />
-              </div>
-              <h2 className="mt-5 text-2xl font-semibold text-[#111827]">
+            <div className="rounded-xl border border-[#E5E5E5] px-6 py-14 text-center">
+              <h2 className="text-2xl font-semibold text-black">
                 Your cart is empty
               </h2>
-              <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-[#56585C]">
-                Add research-use-only peptide products to your cart before
-                checkout.
+
+              <p className="mx-auto mt-3 max-w-[420px] text-sm leading-6 text-[#56585C]">
+                Add products to your cart and they will appear here.
               </p>
+
               <Link
                 href="/all-peptides"
                 className="mt-6 inline-flex rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
               >
-                Browse products
+                Browse Products
               </Link>
             </div>
           ) : (
-            <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
-              <div className="space-y-4">
-                {items.map((item) => (
-                  <article
-                    key={item.id}
-                    className="grid gap-5 overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm transition hover:border-[#F04423]/50 hover:shadow-md sm:grid-cols-[132px_1fr_auto]"
-                  >
-                    <div className="flex h-[132px] items-center justify-center rounded-md border border-[#F04423]/10 bg-[#FFF8F5]">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={132}
-                        height={132}
-                        className="h-full w-full object-contain"
-                      />
-                    </div>
+            <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+              <div className="rounded-xl border border-[#E5E5E5]">
+                <div className="hidden border-b border-[#E5E5E5] px-5 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#56585C] md:grid md:grid-cols-[1fr_120px_130px_100px]">
+                  <span>Product</span>
+                  <span>Price</span>
+                  <span>Quantity</span>
+                  <span className="text-right">Total</span>
+                </div>
 
-                    <div>
-                      <p className="inline-flex rounded-md bg-[#FFF2EF] px-2 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#F04423]">
-                        Research use only
-                      </p>
-                      <h2 className="mt-3 text-lg font-semibold text-[#111827]">
-                        {item.name}
-                      </h2>
-                      {item.size && (
-                        <p className="mt-2 text-sm text-[#56585C]">
-                          {item.size}
-                        </p>
-                      )}
-                      <p className="mt-4 text-sm text-[#56585C]">
-                        Unit price{" "}
-                        <span className="font-semibold text-[#F04423]">
-                          {formatCurrency(item.price)}
-                        </span>
-                      </p>
-                    </div>
+                <div className="divide-y divide-[#E5E5E5]">
+                  {items.map((item) => (
+                    <article
+                      key={item.id}
+                      className="grid gap-5 px-5 py-5 md:grid-cols-[1fr_120px_130px_100px] md:items-center"
+                    >
+                      <div className="flex gap-4">
+                        <div className="relative h-[92px] w-[92px] shrink-0 rounded-lg bg-[#FFF7F4]">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-contain p-2"
+                          />
+                        </div>
 
-                    <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
-                      <div className="flex items-center rounded-md border border-[#F04423]/25 bg-[#FFF8F5]">
+                        <div>
+                          <h2 className="text-sm font-semibold text-black">
+                            {item.name}
+                          </h2>
+
+                          {item.size && (
+                            <p className="mt-1 text-xs text-[#56585C]">
+                              {item.size}
+                            </p>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.id)}
+                            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#F04423] hover:text-[#D93A18]"
+                          >
+                            <Trash2 size={13} />
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className="text-sm font-medium text-[#111827]">
+                        {formatCurrency(item.price)}
+                      </p>
+
+                      <div className="flex w-fit items-center rounded-md border border-[#D1D5DB]">
                         <button
                           type="button"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
-                          className="flex h-10 w-10 items-center justify-center text-[#56585C] transition hover:text-[#F04423]"
+                          className="flex h-9 w-9 items-center justify-center text-[#56585C] hover:text-[#F04423]"
                           aria-label="Decrease quantity"
                         >
-                          <Minus size={16} />
+                          <Minus size={15} />
                         </button>
-                        <span className="w-10 text-center text-sm font-semibold">
+
+                        <span className="w-9 text-center text-sm font-semibold">
                           {item.quantity}
                         </span>
+
                         <button
                           type="button"
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
-                          className="flex h-10 w-10 items-center justify-center text-[#56585C] transition hover:text-[#F04423]"
+                          className="flex h-9 w-9 items-center justify-center text-[#56585C] hover:text-[#F04423]"
                           aria-label="Increase quantity"
                         >
-                          <Plus size={16} />
+                          <Plus size={15} />
                         </button>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.id)}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#56585C] transition hover:text-[#F04423]"
-                      >
-                        <Trash2 size={16} />
-                        Remove
-                      </button>
-                      <p className="rounded-md bg-[#EEFDF3] px-3 py-2 text-right text-lg font-semibold text-[#176B2C]">
+                      <p className="text-sm font-semibold text-black md:text-right">
                         {formatCurrency(item.price * item.quantity)}
                       </p>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  ))}
+                </div>
               </div>
 
-              <aside className="h-fit overflow-hidden rounded-2xl border border-[#F04423]/20 bg-white shadow-md lg:sticky lg:top-28">
-                <div className="bg-[#111827] p-6 text-white">
-                  <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#F04423] text-white">
-                    <ShieldCheck size={22} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold">
-                      Order summary
-                    </h2>
-                    <p className="mt-1 text-xs text-white/70">
-                      Secure checkout ready
-                    </p>
-                  </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                <dl className="space-y-4 text-sm">
+              <aside className="h-fit rounded-xl border border-[#E5E5E5] bg-white p-6 lg:sticky lg:top-28">
+                <h2 className="text-xl font-semibold text-black">
+                  Order Summary
+                </h2>
+
+                <dl className="mt-6 space-y-4 text-sm">
                   <div className="flex justify-between">
                     <dt className="text-[#56585C]">Subtotal</dt>
-                    <dd className="font-semibold text-[#111827]">
+                    <dd className="font-semibold text-black">
                       {formatCurrency(subtotal)}
                     </dd>
                   </div>
+
                   <div className="flex justify-between">
                     <dt className="text-[#56585C]">Shipping</dt>
-                    <dd className="font-semibold text-[#111827]">
+                    <dd className="font-semibold text-black">
                       {formatCurrency(shipping)}
                     </dd>
                   </div>
+
                   <div className="flex justify-between border-b border-[#E5E5E5] pb-4">
-                    <dt className="text-[#56585C]">Estimated tax</dt>
-                    <dd className="font-semibold text-[#111827]">
+                    <dt className="text-[#56585C]">Estimated Tax</dt>
+                    <dd className="font-semibold text-black">
                       {formatCurrency(tax)}
                     </dd>
                   </div>
-                  <div className="rounded-md bg-[#FFF2EF] px-4 py-3">
-                    <div className="flex justify-between text-lg">
-                    <dt className="font-semibold text-[#111827]">Total</dt>
-                    <dd className="font-semibold text-[#F04423]">
+
+                  <div className="flex justify-between text-lg">
+                    <dt className="font-bold text-black">Total</dt>
+                    <dd className="font-bold text-[#F04423]">
                       {formatCurrency(total)}
                     </dd>
-                    </div>
                   </div>
                 </dl>
 
                 <Link
                   href="/checkout"
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-[#F04423] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#D93A18]"
                 >
-                  Checkout <ArrowRight size={17} />
+                  Proceed to Checkout
+                  <ArrowRight size={16} />
                 </Link>
-                <p className="mt-4 text-center text-xs leading-5 text-[#56585C]">
-                  Taxes and shipping are estimated for checkout review.
-                </p>
-                </div>
+
+                <Link
+                  href="/all-peptides"
+                  className="mt-3 flex w-full items-center justify-center rounded-md border border-[#E5E5E5] px-5 py-3 text-sm font-semibold text-black transition hover:border-[#F04423] hover:text-[#F04423]"
+                >
+                  Continue Shopping
+                </Link>
               </aside>
             </div>
           )}

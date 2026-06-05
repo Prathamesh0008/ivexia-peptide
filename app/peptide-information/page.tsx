@@ -1,3 +1,4 @@
+//app\peptide-information\page.tsx
 "use client";
 
 import Image from "next/image";
@@ -7,90 +8,15 @@ import { useMemo, useRef, useState } from "react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PeptideInfoSubNav from "@/components/PeptideInfoSubNav";
+import { INFO_ARTICLES } from "@/data/information";
 
-const informationArticles = [
-  {
-    id: "intro-to-peptides",
-    title: "Intro to Peptides",
-    preview:
-      "Learn the basics of peptides, amino acid chains, peptide bonds, and how peptides are studied in scientific research.",
-    date: "Oct 20, 2023",
-    href: "/peptide-information/intro-to-peptides",
-    img: "/biopeptide-reference/peptideinfo.jpg",
-  },
-  {
-    id: "american-made-peptides",
-    title: "American Made Peptides",
-    preview:
-      "Ivexia Peptide presents research-use-only peptide information with a focus on organized product data and quality signals.",
-    date: "Oct 06, 2023",
-    href: "/peptide-information#american-made-peptides",
-    img: "/Ivexia_Peptide.png",
-  },
-  {
-    id: "peptide-synthesis",
-    title: "Peptide Synthesis",
-    preview:
-      "Peptide synthesis combines amino acids into targeted sequences for research and analytical laboratory workflows.",
-    date: "Sep 27, 2023",
-    href: "/peptide-information#peptide-synthesis",
-    img: "/DNA.png",
-  },
-  {
-    id: "peptide-solubility",
-    title: "Peptide Solubility",
-    preview:
-      "Solubility depends on sequence, charge, hydrophobicity, and the experimental conditions used in research settings.",
-    date: "Sep 21, 2023",
-    href: "/peptide-information#peptide-solubility",
-    img: "/DNA1.jpeg",
-  },
-  {
-    id: "peptide-purification",
-    title: "Peptide Purification",
-    preview:
-      "Purification and analytical testing help verify peptide identity, composition, and research-grade consistency.",
-    date: "Sep 19, 2023",
-    href: "/peptide-information#peptide-purification",
-    img: "/biopeptide-reference/peptideinfo.jpg",
-  },
-  {
-    id: "peptide-bonds",
-    title: "Peptide Bonds",
-    preview:
-      "Peptide bonds link amino acids together and form the backbone of peptide and protein structures.",
-    date: "Sep 17, 2023",
-    href: "/peptide-information#peptide-bonds",
-    img: "/b.png",
-  },
-  {
-    id: "peptide-storage",
-    title: "Peptide Storage",
-    preview:
-      "Storage conditions are important for lyophilized and reconstituted research peptides.",
-    date: "Sep 15, 2023",
-    href: "/peptide-information/peptide-storage",
-    img: "/medicin.png",
-  },
-  {
-    id: "research-peptides",
-    title: "Research Peptides",
-    preview:
-      "Research peptides are intended for laboratory and investigative workflows only.",
-    date: "Sep 09, 2023",
-    href: "/peptide-research",
-    img: "/medicineproduct.jpg",
-  },
-  {
-    id: "peptides-vs-proteins",
-    title: "Peptides vs Proteins",
-    preview:
-      "Peptides and proteins differ by sequence length, structure, and the way they are commonly studied.",
-    date: "Aug 07, 2023",
-    href: "/peptide-information#peptides-vs-proteins",
-    img: "/Hexagonal1.png",
-  },
-];
+const informationArticles = INFO_ARTICLES.map((article) => ({
+  ...article,
+  id: String(article.id).trim(),
+  href: `/peptide-information/${String(article.id).trim()}`,
+}));
+
+type InfoArticle = (typeof informationArticles)[number];
 
 export default function PeptideInformationPage() {
   const [query, setQuery] = useState("");
@@ -106,7 +32,7 @@ export default function PeptideInformationPage() {
   }, [query]);
 
   const featuredArticle =
-    filteredArticles.find((article) => article.id === "peptide-purification") ||
+    filteredArticles.find((article) => article.id === "purity") ||
     filteredArticles[0] ||
     informationArticles[0];
 
@@ -142,15 +68,18 @@ export default function PeptideInformationPage() {
 
             <div className="grid grid-cols-1 items-start gap-4 sm:gap-6 md:grid-cols-5">
               <div className="md:col-span-2">
-                <div className="relative aspect-[4/3] w-full max-w-[340px] overflow-hidden bg-[#FFF7F4]">
+                <Link
+                  href={featuredArticle.href}
+                  className="relative block aspect-[4/3] w-full max-w-[340px] overflow-hidden bg-[#FFF7F4]"
+                >
                   <Image
                     src={featuredArticle.img}
                     alt={featuredArticle.title}
                     fill
                     priority
-                    className="object-cover"
+                    className="object-cover transition duration-500 hover:scale-105"
                   />
-                </div>
+                </Link>
               </div>
 
               <div className="md:col-span-3">
@@ -184,7 +113,7 @@ export default function PeptideInformationPage() {
                         src={article.img}
                         alt={article.title}
                         fill
-                        className="object-cover"
+                        className="object-cover transition duration-500 group-hover:scale-105"
                       />
                     </div>
 
@@ -215,14 +144,14 @@ function InformationSidebar({
   onQueryChange,
   query,
 }: {
-  items: typeof informationArticles;
+  items: InfoArticle[];
   onQueryChange: (value: string) => void;
   query: string;
 }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <aside className="p-0 m-0 lg:sticky lg:top-28">
+    <aside className="m-0 p-0 lg:sticky lg:top-28">
       <div className="mb-4 flex items-center gap-2">
         <div className="flex-1 overflow-hidden rounded-md border border-[#D1D5DB]">
           <input

@@ -4,11 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { useLanguage } from "@/components/LanguageProvider";
 import { PRODUCTS } from "@/data/products.js";
 import type { Product } from "@/data/productTypes";
+import { signOut } from "@/app/auth/actions";
 
 type LanguageCode =
   | "EN" | "AR" | "DE" | "ES" | "NL" | "PT" | "JA" | "ZH"
@@ -59,6 +60,9 @@ export default function Navbar() {
   const [languageOpen, setLanguageOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+const profileRef = useRef<HTMLDivElement>(null);
 
   const { itemCount } = useCart();
   const { currentLanguage, setLanguage, translations } = useLanguage();
@@ -85,6 +89,36 @@ export default function Navbar() {
         .slice(0, 6)
     : [];
 
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const res = await fetch("/api/session", { cache: "no-store" });
+        const data = await res.json();
+
+        setSessionEmail(data.loggedIn ? data.email : null);
+      } catch {
+        setSessionEmail(null);
+      }
+    }
+
+    checkSession();
+  }, []);
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (
+      profileRef.current &&
+      !profileRef.current.contains(event.target as Node)
+    ) {
+      setProfileOpen(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
   const changeLanguage = (code: LanguageCode) => {
     setLanguage(code);
     setLanguageOpen(false);
@@ -146,7 +180,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="hidden h-full w-[330px] shrink-0 items-center justify-end gap-[34px] lg:flex">
+       <div className="hidden h-full w-[430px] shrink-0 items-center justify-end gap-[24px] lg:flex">
           <LanguageMenu
             languageOpen={languageOpen}
             selectedLanguage={selectedLanguage}
@@ -154,10 +188,56 @@ export default function Navbar() {
             changeLanguage={changeLanguage}
           />
 
-          <Link href="/sign-in" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
-            <AccountIcon size={31} />
-            {t("signIn", "Sign in")}
-          </Link>
+  {sessionEmail ? (
+  <div ref={profileRef} className="relative shrink-0">
+    <button
+      type="button"
+      onClick={() => setProfileOpen((prev) => !prev)}
+      className="flex items-center gap-[8px] whitespace-nowrap text-[17px] font-normal text-black transition hover:text-[#F04423]"
+    >
+      <AccountIcon size={29} />
+      Profile
+      <ChevronDown size={15} />
+    </button>
+
+    {profileOpen && (
+      <div className="absolute right-0 top-full z-[9999] mt-3 w-[190px] overflow-hidden rounded-xl border border-[#E5E5E5] bg-white shadow-xl">
+        <Link
+          href="/account"
+          onClick={() => setProfileOpen(false)}
+          className="block px-4 py-3 text-sm font-medium text-[#111827] transition hover:bg-[#FFF2EF] hover:text-[#F04423]"
+        >
+          My Profile
+        </Link>
+
+        <Link
+          href="/account/orders"
+          onClick={() => setProfileOpen(false)}
+          className="block px-4 py-3 text-sm font-medium text-[#111827] transition hover:bg-[#FFF2EF] hover:text-[#F04423]"
+        >
+          My Orders
+        </Link>
+
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="block w-full px-4 py-3 text-left text-sm font-semibold text-red-500 transition hover:bg-red-50"
+          >
+            Logout
+          </button>
+        </form>
+      </div>
+    )}
+  </div>
+) : (
+  <Link
+    href="/sign-in"
+    className="flex shrink-0 items-center gap-[12px] whitespace-nowrap text-[18px] font-normal text-black"
+  >
+    <AccountIcon size={31} />
+    {t("signIn", "Sign in")}
+  </Link>
+)}
 
           <Link href="/cart" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
             <CartIcon itemCount={itemCount} size={31} />
@@ -225,10 +305,32 @@ export default function Navbar() {
               mobile
             />
 
-            <Link href="/sign-in" className="flex items-center gap-2 text-sm font-medium">
-              <AccountIcon size={20} />
-              {t("signIn", "Sign in")}
-            </Link>
+            {sessionEmail ? (
+              <>
+                <Link
+                  href="/account"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 text-sm font-medium"
+                >
+                  <AccountIcon size={20} />
+                  Profile
+                </Link>
+
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className="text-left text-sm font-semibold text-[#F04423]"
+                  >
+                    Logout
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/sign-in" className="flex items-center gap-2 text-sm font-medium">
+                <AccountIcon size={20} />
+                {t("signIn", "Sign in")}
+              </Link>
+            )}
 
             <Link href="/cart" className="flex items-center gap-2 text-sm font-medium">
               <CartIcon itemCount={itemCount} size={20} />

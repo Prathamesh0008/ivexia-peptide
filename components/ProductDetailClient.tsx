@@ -1,3 +1,4 @@
+//components\ProductDetailClient.tsx
 "use client";
 
 import Image from "next/image";
@@ -287,13 +288,12 @@ function ProductInformationTabs({
 
         <div ref={tabContentRef} className="relative scroll-mt-36 overflow-hidden bg-white py-8 text-sm text-[#56585C]">
           {activeTab === "description" && (
-            <FullDescriptionContent
-              chemicalPropertyImages={chemicalPropertyImages}
-              details={details}
-              product={product}
-              sourceProduct={sourceProduct}
-              t={t}
-            />
+      <FullDescriptionContent
+  details={details}
+  product={product}
+  sourceProduct={sourceProduct}
+  t={t}
+/>
           )}
 
           {activeTab === "coa" &&
@@ -498,22 +498,16 @@ function ProductPurchasePanel({
 }
 
 function FullDescriptionContent({
-  chemicalPropertyImages,
   details,
   product,
   sourceProduct,
   t,
 }: {
-  chemicalPropertyImages: ChemicalPropertyImage[];
   details?: ProductDetail;
   product: Product;
   sourceProduct: Product;
   t: (key: string, fallback: string) => string;
 }) {
-  const [activeSection, setActiveSection] = useState<
-    "overview" | "structure" | "research" | "citations"
-  >("overview");
-  const sectionContentRef = useRef<HTMLDivElement>(null);
   const productName = product.name.replace(/\s+\d+(mg|mcg|g)\b/gi, "").trim();
   const content = details?.content;
   const sectionLinks = [
@@ -549,27 +543,14 @@ function FullDescriptionContent({
                 const pointNumber = sectionLinks.findIndex((link) => link.id === item.id) + 1;
 
                 return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveSection(item.id);
-                      window.requestAnimationFrame(() => {
-                        sectionContentRef.current?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
-                      });
-                    }}
-                    className={`flex w-full cursor-pointer items-start gap-5 text-left text-[21px] font-semibold leading-tight transition hover:text-[#D93618] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F04423] ${
-                      activeSection === item.id
-                        ? "text-[#F04423] underline decoration-[#F04423] underline-offset-8"
-                        : "text-[#F04423]"
-                    }`}
+               <a
+  key={item.id}
+  href={`#${item.id}`}
+                   className="flex w-full cursor-pointer items-start gap-5 text-left text-[21px] font-semibold leading-tight text-[#F04423] underline decoration-[#F04423] underline-offset-8 transition hover:text-[#D93618] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F04423]"
                   >
                     <span className="w-6 shrink-0 text-right text-black">{pointNumber}.</span>
                     <span className="max-w-[600px]">{item.label}</span>
-                  </button>
+                  </a>
                 );
               })}
             </div>
@@ -580,27 +561,14 @@ function FullDescriptionContent({
                   const pointNumber = sectionLinks.findIndex((link) => link.id === item.id) + 1;
 
                   return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveSection(item.id);
-                        window.requestAnimationFrame(() => {
-                          sectionContentRef.current?.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start",
-                          });
-                        });
-                      }}
-                      className={`flex w-full cursor-pointer items-center gap-5 text-left text-[22px] font-semibold transition hover:text-[#D93618] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F04423] ${
-                        activeSection === item.id
-                          ? "text-[#F04423] underline decoration-[#F04423] underline-offset-8"
-                          : "text-[#F04423]"
-                      }`}
-                    >
-                      <span className="w-6 shrink-0 text-right text-black">{pointNumber}.</span>
-                      <span>{item.label}</span>
-                    </button>
+                 <a
+  key={item.id}
+  href={`#${item.id}`}
+  className="flex w-full cursor-pointer items-center gap-5 text-left text-[22px] font-semibold text-[#F04423] underline decoration-[#F04423] underline-offset-8 transition hover:text-[#D93618] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F04423]"
+>
+  <span className="w-6 shrink-0 text-right text-black">{pointNumber}.</span>
+  <span>{item.label}</span>
+</a>
                   );
                 })}
               </div>
@@ -609,157 +577,168 @@ function FullDescriptionContent({
         </div>
       </section>
 
-      <section ref={sectionContentRef} className="scroll-mt-36 rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
-        {activeSection === "overview" && (
-          <div className="space-y-5 text-sm leading-7 text-[#374151]">
-            <h2 className="text-2xl font-semibold text-[#111827]">
-              {sectionLinks[0].label}
-            </h2>
-            {product.description && <p>{product.description}</p>}
-            {product.strength && <TextBlock value={product.strength} />}
-            {details?.topDescription && (
-              <div className="space-y-4">
-                {Object.values(details.topDescription).map((paragraph, index) => (
-                  <p key={`description-top-${index}`}>{paragraph}</p>
-                ))}
-              </div>
-            )}
-            {content?.overview?.map((paragraph, index) => (
-              <p key={`overview-inline-${index}`}>{paragraph}</p>
-            ))}
-            {!product.description && !product.strength && !details?.topDescription && !content?.overview?.length && (
-              <p>
-                {product.name} is listed as a research-use-only peptide product
-                with available specifications, purity, and product data shown
-                on this page.
-              </p>
-            )}
-          </div>
-        )}
+    <section id="overview" className="scroll-mt-36 rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
+  <div className="space-y-5 text-sm leading-7 text-[#374151]">
+    <h2 className="text-2xl font-semibold text-[#111827]">
+      {sectionLinks[0].label}
+    </h2>
 
-        {activeSection === "structure" && (
-          <div className="space-y-5">
-            <h2 className="text-2xl font-semibold text-[#111827]">
-              {sectionLinks[1].label}
-            </h2>
-            <div className="grid gap-4 text-sm leading-6 text-[#56585C] sm:grid-cols-2">
-              {sourceProduct.size && <Info label={t("size", "Size")} value={sourceProduct.size} />}
-              {sourceProduct.purity && (
-                <Info label={t("purity", "Purity")} value={sourceProduct.purity} />
-              )}
-              {sourceProduct.cas && <Info label="CAS" value={sourceProduct.cas} />}
-              {sourceProduct.appearance && (
-                <Info
-                  label={t("appearance", "Appearance")}
-                  value={sourceProduct.appearance}
-                />
-              )}
-            </div>
-            {content?.molecularPoints && content.molecularPoints.length > 0 && (
-              <ul className="grid list-disc gap-2 pl-5 text-sm leading-7 text-[#374151]">
-                {content.molecularPoints.map((point, index) => (
-                  <li key={`structure-molecular-${index}`}>{point}</li>
-                ))}
-              </ul>
-            )}
-            <ChemicalFactList product={sourceProduct} details={details} />
-            {!content?.molecularPoints?.length && (
-              <p className="text-sm leading-7 text-[#374151]">
-                Structure details for {product.name} include available size,
-                purity, CAS, and appearance data listed above.
-              </p>
-            )}
-          </div>
-        )}
+    {product.description && <p>{product.description}</p>}
+    {product.strength && <TextBlock value={product.strength} />}
 
-        {activeSection === "research" && (
-          <div className="space-y-6 text-sm leading-7 text-[#374151]">
-            <h2 className="text-2xl font-semibold text-[#111827]">
-              {sectionLinks[2].label}
-            </h2>
-            {content?.scientificBackground?.map((paragraph, index) => (
-              <p key={`research-scientific-${index}`}>{paragraph}</p>
-            ))}
-            {content?.mechanismPoints && content.mechanismPoints.length > 0 && (
-              <ul className="grid list-disc gap-2 pl-5">
-                {content.mechanismPoints.map((point, index) => (
-                  <li key={`research-mechanism-${index}`}>{point}</li>
-                ))}
-              </ul>
-            )}
-            {sourceProduct.applications && sourceProduct.applications.length > 0 && (
-              <div>
-                <h3 className="text-xl font-medium text-[#111827]">
-                  {t("applications", "Applications")}
-                </h3>
-                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {sourceProduct.applications.map((application) => (
-                    <li
-                      key={application}
-                      className="rounded-md border border-[#E5E5E5] px-4 py-3"
-                    >
-                      {application}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {content?.applications && content.applications.length > 0 && (
-              <div className="grid gap-4 md:grid-cols-2">
-                {content.applications.map((application, index) => (
-                  <div key={`research-app-${index}`} className="rounded-md border border-[#E5E5E5] bg-[#FAFAFA] p-4">
-                    <h3 className="font-semibold text-[#111827]">{application.title}</h3>
-                    <p className="mt-2">{application.text}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-            {!content?.scientificBackground?.length &&
-              !content?.mechanismPoints?.length &&
-              !sourceProduct.applications?.length &&
-              !content?.applications?.length && (
-                <p>
-                  Research information for {product.name} is shown from the
-                  available product description, strength, and research-use-only
-                  specifications for this compound.
-                </p>
-              )}
-          </div>
-        )}
+    {details?.topDescription && (
+      <div className="space-y-4">
+        {Object.values(details.topDescription).map((paragraph, index) => (
+          <p key={`description-top-${index}`}>{paragraph}</p>
+        ))}
+      </div>
+    )}
 
-        {activeSection === "citations" && (
-          <div className="space-y-5 text-sm leading-7 text-[#374151]">
-            <h2 className="text-2xl font-semibold text-[#111827]">
-              {sectionLinks[3].label}
-            </h2>
-            {content?.validationPoints && content.validationPoints.length > 0 ? (
-              <ul className="grid list-disc gap-2 pl-5">
-                {content.validationPoints.map((point, index) => (
-                  <li key={`citation-validation-${index}`}>{point}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                Certificates of analysis, HPLC/MS validation, and referenced
-                research documentation are provided when available for this
-                research-use-only compound.
-              </p>
-            )}
-            {content?.regulatoryText && <p>{content.regulatoryText}</p>}
-            {content?.faqItems && content.faqItems.length > 0 && (
-              <div className="space-y-4">
-                {content.faqItems.slice(0, 4).map((faq, index) => (
-                  <div key={`citation-faq-${index}`} className="rounded-md border border-[#E5E5E5] bg-[#FAFAFA] p-4">
-                    <p className="font-semibold text-[#111827]">{faq.q}</p>
-                    <p className="mt-2">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </section>
+    {content?.overview?.map((paragraph, index) => (
+      <p key={`overview-inline-${index}`}>{paragraph}</p>
+    ))}
 
+    {!product.description &&
+      !product.strength &&
+      !details?.topDescription &&
+      !content?.overview?.length && (
+        <p>
+          {product.name} is listed as a research-use-only peptide product with
+          available specifications, purity, and product data shown on this page.
+        </p>
+      )}
+  </div>
+</section>
+
+<section id="structure" className="scroll-mt-36 rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
+  <div className="space-y-5">
+    <h2 className="text-2xl font-semibold text-[#111827]">
+      {sectionLinks[1].label}
+    </h2>
+
+    <div className="grid gap-4 text-sm leading-6 text-[#56585C] sm:grid-cols-2">
+      {sourceProduct.size && <Info label={t("size", "Size")} value={sourceProduct.size} />}
+      {sourceProduct.purity && <Info label={t("purity", "Purity")} value={sourceProduct.purity} />}
+      {sourceProduct.cas && <Info label="CAS" value={sourceProduct.cas} />}
+      {sourceProduct.appearance && (
+        <Info label={t("appearance", "Appearance")} value={sourceProduct.appearance} />
+      )}
+    </div>
+
+    {content?.molecularPoints && content.molecularPoints.length > 0 && (
+      <ul className="grid list-disc gap-2 pl-5 text-sm leading-7 text-[#374151]">
+        {content.molecularPoints.map((point, index) => (
+          <li key={`structure-molecular-${index}`}>{point}</li>
+        ))}
+      </ul>
+    )}
+
+    <ChemicalFactList product={sourceProduct} details={details} />
+
+    {!content?.molecularPoints?.length && (
+      <p className="text-sm leading-7 text-[#374151]">
+        Structure details for {product.name} include available size, purity,
+        CAS, and appearance data listed above.
+      </p>
+    )}
+  </div>
+</section>
+
+<section id="research" className="scroll-mt-36 rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
+  <div className="space-y-6 text-sm leading-7 text-[#374151]">
+    <h2 className="text-2xl font-semibold text-[#111827]">
+      {sectionLinks[2].label}
+    </h2>
+
+    {content?.scientificBackground?.map((paragraph, index) => (
+      <p key={`research-scientific-${index}`}>{paragraph}</p>
+    ))}
+
+    {content?.mechanismPoints && content.mechanismPoints.length > 0 && (
+      <ul className="grid list-disc gap-2 pl-5">
+        {content.mechanismPoints.map((point, index) => (
+          <li key={`research-mechanism-${index}`}>{point}</li>
+        ))}
+      </ul>
+    )}
+
+    {sourceProduct.applications && sourceProduct.applications.length > 0 && (
+      <div>
+        <h3 className="text-xl font-medium text-[#111827]">
+          {t("applications", "Applications")}
+        </h3>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {sourceProduct.applications.map((application) => (
+            <li
+              key={application}
+              className="rounded-md border border-[#E5E5E5] px-4 py-3"
+            >
+              {application}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {content?.applications && content.applications.length > 0 && (
+      <div className="grid gap-4 md:grid-cols-2">
+        {content.applications.map((application, index) => (
+          <div key={`research-app-${index}`} className="rounded-md border border-[#E5E5E5] bg-[#FAFAFA] p-4">
+            <h3 className="font-semibold text-[#111827]">{application.title}</h3>
+            <p className="mt-2">{application.text}</p>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {!content?.scientificBackground?.length &&
+      !content?.mechanismPoints?.length &&
+      !sourceProduct.applications?.length &&
+      !content?.applications?.length && (
+        <p>
+          Research information for {product.name} is shown from the available
+          product description, strength, and research-use-only specifications
+          for this compound.
+        </p>
+      )}
+  </div>
+</section>
+
+<section id="citations" className="scroll-mt-36 rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
+  <div className="space-y-5 text-sm leading-7 text-[#374151]">
+    <h2 className="text-2xl font-semibold text-[#111827]">
+      {sectionLinks[3].label}
+    </h2>
+
+    {content?.validationPoints && content.validationPoints.length > 0 ? (
+      <ul className="grid list-disc gap-2 pl-5">
+        {content.validationPoints.map((point, index) => (
+          <li key={`citation-validation-${index}`}>{point}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>
+        Certificates of analysis, HPLC/MS validation, and referenced research
+        documentation are provided when available for this research-use-only
+        compound.
+      </p>
+    )}
+
+    {content?.regulatoryText && <p>{content.regulatoryText}</p>}
+
+    {content?.faqItems && content.faqItems.length > 0 && (
+      <div className="space-y-4">
+        {content.faqItems.slice(0, 4).map((faq, index) => (
+          <div key={`citation-faq-${index}`} className="rounded-md border border-[#E5E5E5] bg-[#FAFAFA] p-4">
+            <p className="font-semibold text-[#111827]">{faq.q}</p>
+            <p className="mt-2">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+{/* 
       <section className="rounded-[18px] border border-[#E5E5E5] bg-white p-6 sm:p-8">
         {renderChemicalPropertyImages(chemicalPropertyImages, sourceProduct, details)}
       </section>
@@ -768,7 +747,7 @@ function FullDescriptionContent({
         <div className="space-y-8">
           {renderContent(details.content)}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+//app\auth\session.ts
 import { cookies } from "next/headers";
 
 export const SESSION_COOKIE = "ivexia_session";

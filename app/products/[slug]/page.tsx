@@ -1,3 +1,4 @@
+//app\products\[slug]\page.tsx
 import { notFound } from "next/navigation";
 import { PRODUCTS } from "@/data/products.js";
 import productDetails from "@/data/product_Details.js";

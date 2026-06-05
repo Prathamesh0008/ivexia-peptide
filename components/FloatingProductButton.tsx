@@ -1,20 +1,24 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
-import Link from "next/link";
 
-export default function FloatingProductButton() {
+type FloatingProductButtonProps = {
+  onClick: () => void;
+};
+
+export default function FloatingProductButton({ onClick }: FloatingProductButtonProps) {
   const { translations } = useLanguage();
   const navigation = translations.navigation || {};
 
   return (
-    <Link
-      href="/all-peptides"
-      className="fixed right-0 top-1/2 z-40 hidden h-36 w-10 -translate-y-1/2 items-center justify-center rounded-l-xl bg-[#F04423] text-white shadow-lg transition hover:bg-[#D93A18] md:flex"
+    <button
+      type="button"
+      onClick={onClick}
+      className="fixed left-0 top-1/2 z-50 hidden -translate-y-1/2 items-center gap-3 rounded-r-lg bg-[#F04423] px-5 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-[#D93A18] md:flex"
     >
-      <span className="[writing-mode:vertical-rl] text-xs font-semibold tracking-widest">
-        {navigation.productList || "Product List"}
-      </span>
-    </Link>
+      <span>{navigation.productList || "Product List"}</span>
+      <ChevronRight size={20} />
+    </button>
   );
 }

@@ -24,10 +24,13 @@ export default function PeptideInfoSubNav() {
     <div className="w-full border-b border-[#D1D5DB] bg-[#E5E7EB]">
       <div className="mx-auto flex max-w-7xl justify-center gap-10 px-4 py-3 text-sm sm:px-6">
         {links.map((link) => {
-          const active =
-            pathname === link.href ||
-            pathname.startsWith(`${link.href}/`) ||
-            link.aliases.includes(pathname);
+          const isHome = link.href === "/peptide-information";
+
+          const active = isHome
+            ? pathname === "/peptide-information"
+            : pathname === link.href ||
+              pathname.startsWith(`${link.href}/`) ||
+              link.aliases.includes(pathname);
 
           return (
             <Link
@@ -40,6 +43,7 @@ export default function PeptideInfoSubNav() {
               }`}
             >
               {link.label}
+
               {active && (
                 <span className="absolute bottom-0 left-0 h-[2px] w-full rounded-full bg-[#F04423]" />
               )}

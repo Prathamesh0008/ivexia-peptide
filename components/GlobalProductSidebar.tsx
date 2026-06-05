@@ -1,3 +1,4 @@
+//components\GlobalProductSidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -20,23 +21,27 @@ const productsByCategory = products.reduce<Record<string, Product[]>>(
 export default function GlobalProductSidebar() {
   const pathname = usePathname();
 
-  if (
-    pathname === "/" ||
-    pathname === "/account" ||
-    pathname === "/cart" ||
-    pathname.startsWith("/checkout") ||
-    pathname === "/contact" ||
-    pathname === "/about" ||
-    pathname === "/all-peptides" ||
-    pathname === "/popular-peptides" ||
-    pathname === "/bundle-save" ||
-    pathname === "/peptide-storage" ||
-    pathname.startsWith("/peptide-information") ||
-    pathname.startsWith("/peptide-research") ||
-    pathname.startsWith("/products/")
-  ) {
-    return null;
-  }
+if (
+  pathname === "/" ||
+  pathname === "/account" ||
+  pathname.startsWith("/account/orders") ||
+  pathname === "/cart" ||
+  pathname === "/sign-in" ||
+  pathname === "/register" ||
+  pathname === "/forgot-password" ||
+  pathname.startsWith("/checkout") ||
+  pathname === "/contact" ||
+  pathname === "/about" ||
+  pathname === "/all-peptides" ||
+  pathname === "/popular-peptides" ||
+  pathname === "/bundle-save" ||
+  pathname === "/peptide-storage" ||
+  pathname.startsWith("/peptide-information") ||
+  pathname.startsWith("/peptide-research") ||
+  pathname.startsWith("/products/")
+) {
+  return null;
+}
 
   return (
     <aside className="fixed bottom-0 left-[max(0px,calc((100vw-1280px)/2))] top-[140px] z-30 hidden w-[260px] overflow-y-auto bg-white px-5 py-7 lg:block">
