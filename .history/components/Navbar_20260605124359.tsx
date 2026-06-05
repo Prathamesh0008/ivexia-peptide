@@ -3,7 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import {
+  ChevronDown,
+  Menu,
+  Search,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -70,9 +75,7 @@ export default function Navbar() {
     languageOptions[0];
 
   const t = (key: string, fallback: string) => navigation[key] || fallback;
-
   const products = PRODUCTS as Product[];
-
   const suggestions = searchQuery.trim()
     ? products
         .filter((product) => {
@@ -93,6 +96,7 @@ export default function Navbar() {
 
   const submitSearch = () => {
     const query = searchQuery.trim();
+
     if (!query) return;
 
     router.push(`/search?query=${encodeURIComponent(query)}`);
@@ -102,24 +106,26 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-white">
-      <div className="mx-auto flex h-[92px] w-full max-w-[1725px] items-center px-[88px] max-xl:px-10 max-lg:h-[82px] max-lg:px-5">
-        <Link href="/" className="flex h-full w-[385px] shrink-0 items-center max-xl:w-[320px] max-lg:w-auto">
+      <div className="mx-auto flex min-h-[118px] w-full max-w-[1840px] items-center justify-between gap-7 px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20">
+        <Link
+          href="/"
+          className="flex h-16 shrink-0 items-center"
+        >
           <Image
             src="/Ivexia_Peptide.png"
             alt="Ivexia Peptide"
-            width={390}
-            height={88}
+            width={500}
+            height={130}
             priority
-            className="h-auto w-[380px] object-contain max-xl:w-[310px] max-lg:w-[240px]"
+            className="h-20 w-auto max-w-[390px] object-contain"
           />
         </Link>
 
-        <div className="hidden flex-1 justify-center lg:flex">
-          <div className="relative flex h-[60px] w-full max-w-[933px] items-center rounded-[9px] border border-[#C8C8C8] bg-white px-[28px]">
+        <div className="hidden flex-1 lg:block">
+          <div className="relative mx-auto flex h-[60px] w-full max-w-[850px] items-center rounded-lg border border-[#C7C7C7] bg-white px-6 focus-within:ring-2 focus-within:ring-[#F04423]/20">
             <button type="button" onClick={submitSearch} aria-label="Search">
-              <Search size={23} strokeWidth={2} className="text-[#5F6368]" />
+              <Search size={22} strokeWidth={2} className="text-[#575B61]" />
             </button>
-
             <input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
@@ -128,8 +134,8 @@ export default function Navbar() {
               onKeyDown={(event) => {
                 if (event.key === "Enter") submitSearch();
               }}
-              className="ml-[22px] w-full bg-transparent text-[16px] text-black outline-none placeholder:text-[#5F6368]"
-              placeholder={t("search", "")}
+              className="ml-5 w-full text-[16px] leading-none text-[#24272B] outline-none placeholder:text-[#4B5563]"
+              placeholder={t("search", "Search")}
             />
 
             {searchFocused && (
@@ -146,50 +152,62 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="hidden h-full w-[330px] shrink-0 items-center justify-end gap-[34px] lg:flex">
-          <LanguageMenu
-            languageOpen={languageOpen}
-            selectedLanguage={selectedLanguage}
-            toggleLanguageOpen={() => setLanguageOpen((current) => !current)}
-            changeLanguage={changeLanguage}
-          />
+        <div className="hidden shrink-0 flex-col items-end gap-3 lg:flex">
+          <div className="flex items-center gap-7">
+            <LanguageMenu
+              languageOpen={languageOpen}
+              selectedLanguage={selectedLanguage}
+              toggleLanguageOpen={() => setLanguageOpen((current) => !current)}
+              changeLanguage={changeLanguage}
+            />
 
-          <Link href="/sign-in" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
-            <AccountIcon size={31} />
-            {t("signIn", "Sign in")}
-          </Link>
+            <Link
+              href="/sign-in"
+              className="flex items-center gap-2 text-[15px] font-normal text-black"
+            >
+              <AccountIcon size={22} />
+              {t("signIn", "Sign in")}
+            </Link>
 
-          <Link href="/cart" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
-            <CartIcon itemCount={itemCount} size={31} />
-            {t("myCart", "My Cart")}
-          </Link>
+            <Link
+              href="/cart"
+              className="flex items-center gap-2 text-[15px] font-normal text-black"
+            >
+              <CartIcon itemCount={itemCount} size={23} />
+              {t("myCart", "My Cart")}
+            </Link>
+          </div>
         </div>
 
-        <button type="button" onClick={() => setOpen((current) => !current)} className="ml-auto lg:hidden">
+        <button
+          type="button"
+          onClick={() => setOpen((current) => !current)}
+          className="ml-auto lg:hidden"
+        >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      <nav className="hidden h-[70px] lg:block">
-        <div className="mx-auto flex h-full w-full max-w-[1725px] items-center justify-between overflow-hidden px-[175px] max-xl:px-20">
-          <div className="flex items-center gap-[40px]">
+      <nav className="hidden h-[54px] px-4 sm:px-6 lg:block lg:px-16 xl:px-24 2xl:px-32">
+        <div className="mx-auto flex h-full w-full max-w-[1660px] items-center justify-between overflow-hidden">
+          <div className="flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
-                className="whitespace-nowrap text-[18px] font-normal text-[#06101F] transition hover:text-[#F04423]"
+                className="text-[15px] font-normal text-[#06101F] transition hover:text-[#F04423]"
               >
                 {t(link.key, link.fallback)}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-[48px]">
+          <div className="flex items-center gap-12">
             {secondaryLinks.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
-                className="whitespace-nowrap text-[18px] font-normal text-[#06101F] transition hover:text-[#F04423]"
+                className="text-[15px] font-normal text-[#06101F] transition hover:text-[#F04423]"
               >
                 {t(link.key, link.fallback)}
               </Link>
@@ -204,7 +222,6 @@ export default function Navbar() {
             <button type="button" onClick={submitSearch} aria-label="Search">
               <Search size={18} />
             </button>
-
             <input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
@@ -223,7 +240,7 @@ export default function Navbar() {
               toggleLanguageOpen={() => setLanguageOpen((current) => !current)}
               changeLanguage={changeLanguage}
               mobile
-            />
+            />  
 
             <Link href="/sign-in" className="flex items-center gap-2 text-sm font-medium">
               <AccountIcon size={20} />
@@ -235,7 +252,10 @@ export default function Navbar() {
               {t("myCart", "My Cart")}
             </Link>
 
-            {[...navLinks, ...secondaryLinks].map((link) => (
+            {[
+              ...navLinks,
+              ...secondaryLinks,
+            ].map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
@@ -264,10 +284,12 @@ function SearchSuggestions({
   const popularKeywords = ["BPC-157", "TB-500", "GHRP-2", "CJC-1295", "GHK-Cu"];
 
   return (
-    <div className="absolute left-0 top-full z-[1000] mt-2 w-full rounded-xl border border-[#E5E5E5] bg-white p-4 shadow-xl">
+    <div className="absolute left-0 top-full z-[1000] mt-2 w-full rounded-2xl border border-[#E5E5E5] bg-white p-4 shadow-xl">
       {query.trim() === "" ? (
         <>
-          <p className="mb-2 text-xs font-semibold text-[#6B7280]">Popular Keywords</p>
+          <p className="mb-2 text-xs font-semibold text-[#6B7280]">
+            Popular Keywords
+          </p>
           <div className="flex flex-wrap gap-2">
             {popularKeywords.map((keyword) => (
               <button
@@ -329,7 +351,7 @@ function LanguageMenu({
         className={
           mobile
             ? "flex items-center gap-2 rounded-md border border-[#D8D8D8] px-3 py-2 text-sm font-medium text-[#06101F]"
-            : "flex items-center gap-1.5 text-[16px] font-normal text-black"
+            : "flex items-center gap-1.5 text-[15px] font-normal text-black"
         }
       >
         {selectedLanguage.code}
@@ -357,7 +379,14 @@ function LanguageMenu({
 
 function AccountIcon({ size }: { size: number }) {
   return (
-    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="13" cy="7" r="3.65" stroke="currentColor" strokeWidth="1.6" />
       <path
         d="M5.05 21.15v-1.3c0-3.15 3.55-5.45 7.95-5.45s7.95 2.3 7.95 5.45v1.3c-2.05.55-4.75.85-7.95.85s-5.9-.3-7.95-.85Z"
@@ -372,7 +401,14 @@ function AccountIcon({ size }: { size: number }) {
 function CartIcon({ itemCount, size }: { itemCount: number; size: number }) {
   return (
     <span className="relative">
-      <svg aria-hidden="true" width={size} height={size} viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        aria-hidden="true"
+        width={size}
+        height={size}
+        viewBox="0 0 26 26"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           d="M4.15 5.2h2.55l1.8 10.15c.15.82.85 1.4 1.68 1.4h8.55c.76 0 1.42-.5 1.63-1.23l1.45-5.12H8.02"
           stroke="currentColor"
@@ -383,7 +419,6 @@ function CartIcon({ itemCount, size }: { itemCount: number; size: number }) {
         <circle cx="10.9" cy="21.2" r="1.15" fill="currentColor" />
         <circle cx="18.2" cy="21.2" r="1.15" fill="currentColor" />
       </svg>
-
       {itemCount > 0 && (
         <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F04423] px-1 text-[11px] font-semibold text-white">
           {itemCount}

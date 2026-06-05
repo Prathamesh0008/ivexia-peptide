@@ -64,7 +64,6 @@ export default function Navbar() {
   const { currentLanguage, setLanguage, translations } = useLanguage();
 
   const navigation = translations.navigation || {};
-
   const selectedLanguage =
     languageOptions.find((language) => language.code === currentLanguage) ||
     languageOptions[0];
@@ -102,18 +101,21 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E5E5E5] bg-white">
-      <div className="mx-auto flex h-[92px] w-full max-w-[1725px] items-center px-[88px] max-xl:px-10 max-lg:h-[82px] max-lg:px-5">
-        <Link href="/" className="flex h-full w-[385px] shrink-0 items-center max-xl:w-[320px] max-lg:w-auto">
+      {/* TOP ROW */}
+      <div className="mx-auto flex h-[60px] w-full max-w-[1725px] items-center px-[88px]">
+        {/* Logo */}
+        <Link href="/" className="flex h-full w-[385px] shrink-0 items-center">
           <Image
             src="/Ivexia_Peptide.png"
             alt="Ivexia Peptide"
             width={390}
             height={88}
             priority
-            className="h-auto w-[380px] object-contain max-xl:w-[310px] max-lg:w-[240px]"
+            className="h-auto w-[380px] object-contain"
           />
         </Link>
 
+        {/* Search */}
         <div className="hidden flex-1 justify-center lg:flex">
           <div className="relative flex h-[60px] w-full max-w-[933px] items-center rounded-[9px] border border-[#C8C8C8] bg-white px-[28px]">
             <button type="button" onClick={submitSearch} aria-label="Search">
@@ -146,6 +148,7 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Right Icons */}
         <div className="hidden h-full w-[330px] shrink-0 items-center justify-end gap-[34px] lg:flex">
           <LanguageMenu
             languageOpen={languageOpen}
@@ -154,24 +157,35 @@ export default function Navbar() {
             changeLanguage={changeLanguage}
           />
 
-          <Link href="/sign-in" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
+          <Link
+            href="/sign-in"
+            className="flex items-center gap-[12px] text-[18px] font-normal text-black"
+          >
             <AccountIcon size={31} />
             {t("signIn", "Sign in")}
           </Link>
 
-          <Link href="/cart" className="flex items-center gap-[12px] text-[18px] font-normal text-black">
+          <Link
+            href="/cart"
+            className="flex items-center gap-[12px] text-[18px] font-normal text-black"
+          >
             <CartIcon itemCount={itemCount} size={31} />
             {t("myCart", "My Cart")}
           </Link>
         </div>
 
-        <button type="button" onClick={() => setOpen((current) => !current)} className="ml-auto lg:hidden">
+        <button
+          type="button"
+          onClick={() => setOpen((current) => !current)}
+          className="ml-auto lg:hidden"
+        >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      <nav className="hidden h-[70px] lg:block">
-        <div className="mx-auto flex h-full w-full max-w-[1725px] items-center justify-between overflow-hidden px-[175px] max-xl:px-20">
+      {/* BOTTOM ROW */}
+      <nav className="hidden h-[72px] lg:block">
+        <div className="mx-auto flex h-full max-w-[1725px] items-center justify-between px-[175px]">
           <div className="flex items-center gap-[40px]">
             {navLinks.map((link) => (
               <Link
@@ -198,6 +212,7 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* MOBILE MENU */}
       {open && (
         <div className="border-t border-[#E5E5E5] bg-white px-5 py-5 lg:hidden">
           <div className="mb-5 flex items-center rounded-md border border-[#E5E5E5] px-4 py-3">
@@ -267,7 +282,10 @@ function SearchSuggestions({
     <div className="absolute left-0 top-full z-[1000] mt-2 w-full rounded-xl border border-[#E5E5E5] bg-white p-4 shadow-xl">
       {query.trim() === "" ? (
         <>
-          <p className="mb-2 text-xs font-semibold text-[#6B7280]">Popular Keywords</p>
+          <p className="mb-2 text-xs font-semibold text-[#6B7280]">
+            Popular Keywords
+          </p>
+
           <div className="flex flex-wrap gap-2">
             {popularKeywords.map((keyword) => (
               <button
@@ -295,7 +313,9 @@ function SearchSuggestions({
               >
                 <span className="font-semibold">{product.name}</span>
                 {product.category && (
-                  <span className="ml-2 text-xs text-[#6B7280]">{product.category}</span>
+                  <span className="ml-2 text-xs text-[#6B7280]">
+                    {product.category}
+                  </span>
                 )}
               </Link>
             );
@@ -357,7 +377,14 @@ function LanguageMenu({
 
 function AccountIcon({ size }: { size: number }) {
   return (
-    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="13" cy="7" r="3.65" stroke="currentColor" strokeWidth="1.6" />
       <path
         d="M5.05 21.15v-1.3c0-3.15 3.55-5.45 7.95-5.45s7.95 2.3 7.95 5.45v1.3c-2.05.55-4.75.85-7.95.85s-5.9-.3-7.95-.85Z"
@@ -372,7 +399,14 @@ function AccountIcon({ size }: { size: number }) {
 function CartIcon({ itemCount, size }: { itemCount: number; size: number }) {
   return (
     <span className="relative">
-      <svg aria-hidden="true" width={size} height={size} viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        aria-hidden="true"
+        width={size}
+        height={size}
+        viewBox="0 0 26 26"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           d="M4.15 5.2h2.55l1.8 10.15c.15.82.85 1.4 1.68 1.4h8.55c.76 0 1.42-.5 1.63-1.23l1.45-5.12H8.02"
           stroke="currentColor"
