@@ -11,25 +11,34 @@ export const metadata = {
   description: "View your Ivexia Peptide order history.",
 };
 
+type OrderItem = {
+  id?: string;
+  name?: string;
+  quantity?: number;
+  qty?: number;
+  slug?: string;
+};
+
 async function getUserOrders(email: string) {
   const client = await clientPromise;
   const db = client.db();
 
   const orders = await db
     .collection("orders")
-    .find({ email })
+    .find({ $or: [{ email }, { "customer.email": email }] })
     .sort({ createdAt: -1 })
     .toArray();
 
   return orders.map((order) => ({
     id: String(order._id),
+    orderNumber: order.orderNumber || String(order._id).slice(-6),
     email: order.email || "",
-    total: order.total || order.totalAmount || 0,
+    total: order.totals?.total || order.total || order.totalAmount || 0,
     status: order.status || "Pending",
     createdAt: order.createdAt
       ? new Date(order.createdAt).toLocaleDateString()
       : "N/A",
-    items: order.items || order.cartItems || [],
+    items: (order.items || order.cartItems || []) as OrderItem[],
   }));
 }
 
@@ -101,7 +110,7 @@ export default async function OrdersPage() {
 
                         <div>
                           <p className="text-sm font-semibold text-black">
-                            Order #{order.id.slice(-6)}
+                            Order #{order.orderNumber}
                           </p>
                           <p className="mt-1 text-xs text-[#56585C]">
                             {order.createdAt}
@@ -127,7 +136,7 @@ export default async function OrdersPage() {
                       </p>
 
                       <div className="space-y-2">
-                        {order.items.map((item: any, index: number) => (
+                        {order.items.map((item, index) => (
                           <div
                             key={`${item.id || item.slug || index}`}
                             className="flex justify-between gap-4 rounded-lg bg-[#FAFAFA] px-4 py-3 text-sm"

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import Footer from "@/components/Footer";
@@ -20,12 +20,45 @@ function formatCurrency(value: number) {
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const router = useRouter();
+  const [authChecking, setAuthChecking] = useState(true);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const shipping = subtotal > 0 ? 18 : 0;
   const tax = subtotal * 0.0825;
   const total = subtotal + shipping + tax;
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkSession() {
+      try {
+        const res = await fetch("/api/session");
+        const data = (await res.json()) as { loggedIn?: boolean };
+
+        if (!active) {
+          return;
+        }
+
+        if (!data.loggedIn) {
+          router.replace("/sign-in?returnTo=/checkout");
+          return;
+        }
+
+        setAuthChecking(false);
+      } catch {
+        if (active) {
+          router.replace("/sign-in?returnTo=/checkout");
+        }
+      }
+    }
+
+    checkSession();
+
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -122,7 +155,17 @@ export default function CheckoutPage() {
             </p>
           </div>
 
-          {items.length === 0 && !message ? (
+          {authChecking ? (
+            <div className="rounded-xl border border-[#E5E5E5] px-6 py-14 text-center">
+              <h2 className="text-2xl font-semibold text-black">
+                Checking account
+              </h2>
+
+              <p className="mx-auto mt-3 max-w-[420px] text-sm leading-6 text-[#56585C]">
+                Please sign in or create an account before checkout.
+              </p>
+            </div>
+          ) : items.length === 0 && !message ? (
             <div className="rounded-xl border border-[#E5E5E5] px-6 py-14 text-center">
               <h2 className="text-2xl font-semibold text-black">
                 Your cart is empty

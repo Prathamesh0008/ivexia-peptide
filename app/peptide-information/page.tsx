@@ -192,9 +192,9 @@ function InformationSidebar({
       </ul>
 
       <div className="mb-4 mt-4">
-        <div className="relative h-[160px] w-full overflow-hidden rounded-lg bg-[#FFF7F4]">
+        <div className="relative h-[160px] w-full overflow-hidden ">
           <Image
-            src="/biopeptide-reference/aboutbanner.png"
+            src="/capsulebottle.png"
             alt="Peptide research reference banner"
             fill
             className="object-cover"

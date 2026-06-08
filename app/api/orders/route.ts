@@ -1,5 +1,6 @@
 //app\api\orders\route.ts
 import clientPromise from "@/lib/mongodb";
+import { getSession } from "@/app/auth/session";
 
 type CheckoutItem = {
   id: string;
@@ -51,6 +52,15 @@ function getErrorCode(error: unknown) {
 
 export async function POST(request: Request) {
   try {
+    const session = await getSession();
+
+    if (!session) {
+      return Response.json(
+        { message: "Please sign in before placing an order." },
+        { status: 401 },
+      );
+    }
+
     const payload = (await request.json()) as CheckoutPayload;
 
     if (!payload.customer?.email || !payload.customer?.name) {
@@ -83,6 +93,7 @@ export async function POST(request: Request) {
 
     const result = await db.collection("orders").insertOne({
       orderNumber,
+      email: session.email,
       customer: payload.customer,
       items: payload.items,
       payment: {

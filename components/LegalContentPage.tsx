@@ -1,26 +1,25 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import type { ReactNode } from "react";
 
 export default function LegalContentPage({
   title,
-  description,
+  children,
 }: {
   title: string;
-  description: string;
+  children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-white text-[#090909]">
+    <main className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
-        <h1 className="text-3xl font-bold">{title}</h1>
-        <div className="mt-6 space-y-5 rounded-xl border border-[#E5E5E5] bg-white p-6 text-sm leading-7 text-[#56585C]">
-          <p>{description}</p>
-          <p>
-            Ivexia Peptide products and content are provided for research-use-only
-            informational purposes. For specific support questions, please contact
-            our team.
-          </p>
+      <section className="mx-auto max-w-[1180px] px-6 py-12">
+        <h1 className="mb-9 text-[34px] font-bold leading-tight text-black">
+          {title}
+        </h1>
+
+        <div className="legal-content max-w-[1120px] text-[15px] leading-[1.75] text-black">
+          {children}
         </div>
       </section>
 

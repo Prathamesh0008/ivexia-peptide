@@ -2,14 +2,32 @@
 
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { register } from "@/app/auth/actions";
 
 export default function RegisterPage() {
+  const redirectToInputRef = useRef<HTMLInputElement>(null);
+  const signInLinkRef = useRef<HTMLAnchorElement>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+
+    if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
+      if (redirectToInputRef.current) {
+        redirectToInputRef.current.value = returnTo;
+      }
+
+      if (signInLinkRef.current) {
+        signInLinkRef.current.href = `/sign-in?returnTo=${encodeURIComponent(
+          returnTo,
+        )}`;
+      }
+    }
+  }, []);
 
   return (
     <main className="min-h-screen bg-white text-[#090909]">
@@ -22,6 +40,13 @@ export default function RegisterPage() {
           </h1>
 
           <form action={register} className="mt-8 max-w-[440px]">
+            <input
+              ref={redirectToInputRef}
+              type="hidden"
+              name="redirectTo"
+              defaultValue="/account"
+            />
+
             <h2 className="text-base font-bold text-[#56585C]">
               Personal Information
             </h2>
@@ -137,6 +162,7 @@ export default function RegisterPage() {
             <p className="mt-6 text-xs text-[#F04423]">* Required Fields</p>
 
             <Link
+              ref={signInLinkRef}
               href="/sign-in"
               className="mt-6 inline-block text-sm font-semibold text-[#F04423]"
             >

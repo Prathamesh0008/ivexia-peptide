@@ -10,6 +10,13 @@ function getString(formData: FormData, key: string) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function getSafeRedirectPath(formData: FormData) {
+  const redirectTo = getString(formData, "redirectTo");
+  return redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+    ? redirectTo
+    : "/account";
+}
+
 async function getUsersCollection() {
   const client = await clientPromise;
   const db = client.db();
@@ -17,6 +24,7 @@ async function getUsersCollection() {
 }
 
 export async function register(formData: FormData) {
+  const redirectTo = getSafeRedirectPath(formData);
   const firstName = getString(formData, "firstName");
   const lastName = getString(formData, "lastName");
   const email = getString(formData, "email").toLowerCase();
@@ -31,7 +39,7 @@ export async function register(formData: FormData) {
     password.length < 6 ||
     password !== confirmPassword
   ) {
-    redirect("/register?error=invalid");
+    redirect(`/register?error=invalid&returnTo=${encodeURIComponent(redirectTo)}`);
   }
 
   const users = await getUsersCollection();
@@ -39,7 +47,7 @@ export async function register(formData: FormData) {
   const existingUser = await users.findOne({ email });
 
   if (existingUser) {
-    redirect("/register?error=exists");
+    redirect(`/register?error=exists&returnTo=${encodeURIComponent(redirectTo)}`);
   }
 
   await users.insertOne({
@@ -64,15 +72,16 @@ export async function register(formData: FormData) {
     path: "/",
   });
 
-  redirect("/account");
+  redirect(redirectTo);
 }
 
 export async function signIn(formData: FormData) {
+  const redirectTo = getSafeRedirectPath(formData);
   const email = getString(formData, "email").toLowerCase();
   const password = getString(formData, "password");
 
   if (!email.includes("@") || password.length < 6) {
-    redirect("/sign-in?error=invalid");
+    redirect(`/sign-in?error=invalid&returnTo=${encodeURIComponent(redirectTo)}`);
   }
 
   const users = await getUsersCollection();
@@ -80,7 +89,7 @@ export async function signIn(formData: FormData) {
   const user = await users.findOne({ email });
 
   if (!user || user.password !== password) {
-    redirect("/sign-in?error=invalid");
+    redirect(`/sign-in?error=invalid&returnTo=${encodeURIComponent(redirectTo)}`);
   }
 
   const cookieStore = await cookies();
@@ -95,7 +104,7 @@ export async function signIn(formData: FormData) {
     path: "/",
   });
 
-  redirect("/account");
+  redirect(redirectTo);
 }
 
 export async function signOut() {

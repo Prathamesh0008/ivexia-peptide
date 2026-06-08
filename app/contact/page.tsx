@@ -4,6 +4,7 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Mail, MapPin, Phone, Truck } from "lucide-react";
 
 export default function ContactPage() {
   const [loading, setLoading] = useState(false);
@@ -32,85 +33,89 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-[#090909]">
+    <main className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="mx-auto max-w-[1400px] px-6 pb-0 pt-16 md:px-10 xl:px-20">
-        <div className="grid gap-14 lg:grid-cols-2">
-          <div className="space-y-6 rounded-xl border border-[#E5E5E5] bg-white p-6 shadow-md">
-            <h1 className="text-3xl font-bold text-[#090909]">
-              Got Any Questions?
-            </h1>
+      <section className="border-t border-[#E5E5E5]">
+   <div className="mx-auto max-w-[1360px] px-6 py-10 lg:px-20">
+          <h1 className="mb-8 text-[28px] font-bold text-black">Contact Us</h1>
 
-            <p className="text-[16px] leading-relaxed text-[#56585C]">
-              Send Ivexia Peptide a message and our support team will respond as soon as possible.
-            </p>
+          <div className="max-w-[520px]">
+            <h2 className="mb-6 text-[20px] font-bold">Got Any Questions?</h2>
 
-            <form className="space-y-5" onSubmit={sendEmail}>
+            <form onSubmit={sendEmail} className="space-y-6">
               <input type="hidden" name="time" value={new Date().toLocaleString()} />
               <input type="hidden" name="subject" value="Contact page inquiry" />
 
               <Field label="Name" required>
-                <input
-                  name="user_name"
-                  required
-                  className="w-full rounded-lg border border-[#D1D5DB] p-3 text-sm outline-none focus:ring-2 focus:ring-[#F04423]/25"
-                />
+                <input name="user_name" required className="contact-input" />
               </Field>
 
               <Field label="Email" required>
-                <input
-                  name="user_email"
-                  type="email"
-                  required
-                  className="w-full rounded-lg border border-[#D1D5DB] p-3 text-sm outline-none focus:ring-2 focus:ring-[#F04423]/25"
-                />
+                <input name="user_email" type="email" required className="contact-input" />
               </Field>
 
               <Field label="Phone">
-                <input
-                  name="phone"
-                  className="w-full rounded-lg border border-[#D1D5DB] p-3 text-sm outline-none focus:ring-2 focus:ring-[#F04423]/25"
-                />
+                <input name="phone" className="contact-input" />
               </Field>
 
               <Field label="Comment" required>
-                <textarea
-                  name="message"
-                  required
-                  rows={5}
-                  className="w-full rounded-lg border border-[#D1D5DB] p-3 text-sm outline-none focus:ring-2 focus:ring-[#F04423]/25"
-                />
+                <textarea name="message" required rows={6} className="contact-input resize-y" />
               </Field>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-full bg-[#F04423] py-3 font-semibold text-white shadow-md transition hover:bg-[#D93A18] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-[36px] w-[170px] rounded-md bg-[#F04423] text-[13px] font-bold text-white transition hover:bg-[#D93A18] disabled:opacity-60"
               >
                 {loading ? "Sending..." : "Submit"}
               </button>
 
               {status && (
-                <p className="text-sm font-semibold text-[#F04423]">{status}</p>
+                <p className="text-[13px] font-semibold text-[#F04423]">
+                  {status}
+                </p>
               )}
             </form>
           </div>
 
-          <div className="space-y-6 rounded-xl border border-[#F04423]/30 bg-[#FFF7F4] p-10 shadow-md">
-            <h2 className="text-3xl font-bold text-[#090909]">
-              Contact Information
-            </h2>
+          <div className="mt-14">
+            <h2 className="mb-5 text-[20px] font-bold">Contact Information</h2>
 
-            <p className="text-[16px] leading-relaxed text-[#56585C]">
-              For questions about Ivexia Peptide research-use-only products,
-              support, or orders, contact us through the details below.
-            </p>
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+              <InfoCard
+                icon={MapPin}
+                title="Mailing Address"
+                lines={[
+                  "Ivexia Peptide",
+                  "110 SE 6th St #1797,",
+                  "Ft. Lauderdale, FL 33301",
+                  "USA",
+                ]}
+              />
 
-            <InfoBlock title="Email" value="service@ivexiapeptide.com" />
-            <InfoBlock title="Phone" value="T: 1-800-986-6401" />
-            <InfoBlock title="Mailing Address" value="110 SE 6th St #1797, Ft. Lauderdale, FL 33301, USA" />
-            <InfoBlock title="Shipping Days" value="Mon - Fri / Except Holidays" />
+              <InfoCard
+                icon={Mail}
+                title="Email"
+                lines={["service@ivexiapeptide.com"]}
+              />
+
+              <InfoCard
+                icon={Phone}
+                title="Phone"
+                lines={["T: 1-800-986-6401", "Monday - Friday 9AM - 4PM PST"]}
+              />
+
+              <InfoCard
+                icon={Truck}
+                title="Shipping Days"
+                lines={[
+                  "Mon - Fri / Except Holidays",
+                  "Orders placed and paid after 12 PM PST",
+                  "are shipped the following business day",
+                ]}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -131,7 +136,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-[#374151]">
+      <span className="mb-1 block text-[12px] font-bold text-black">
         {label}
         {required && <span className="text-[#F04423]"> *</span>}
       </span>
@@ -140,11 +145,28 @@ function Field({
   );
 }
 
-function InfoBlock({ title, value }: { title: string; value: string }) {
+function InfoCard({
+  icon: Icon,
+  title,
+  lines,
+}: {
+  icon: React.ElementType;
+  title: string;
+  lines: string[];
+}) {
   return (
-    <div className="text-[16px]">
-      <p className="font-semibold text-[#090909]">{title}</p>
-      <p className="mt-1 text-[#56585C]">{value}</p>
+    <div className="grid min-h-[120px] grid-cols-[24px_1fr] gap-3 bg-[#F7F7F7] p-5">
+      <Icon className="mt-1 text-[#F04423]" size={18} strokeWidth={2.8} />
+
+      <div>
+        <h3 className="text-[13px] font-bold text-black">{title}</h3>
+
+        <div className="mt-2 space-y-0.5 text-[12px] leading-5 text-[#374151]">
+          {lines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

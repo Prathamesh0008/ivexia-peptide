@@ -38,7 +38,13 @@ if (
   pathname === "/peptide-storage" ||
   pathname.startsWith("/peptide-information") ||
   pathname.startsWith("/peptide-research") ||
-  pathname.startsWith("/products/")
+  pathname.startsWith("/products/")||
+  pathname === "/privacy-policy" ||
+  pathname === "/terms-of-use" ||
+  pathname === "/shipping-payments" ||
+  pathname === "/refunds-returns" ||
+  pathname === "/accessibility-statement" ||
+  pathname === "/reward-program-terms"
 ) {
   return null;
 }

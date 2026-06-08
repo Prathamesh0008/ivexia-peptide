@@ -1,209 +1,106 @@
-//app\about\page.tsx
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const countrySections = [
-  {
-    heading: "Ivexia Peptide in Germany",
-    subheading: "Research peptide information for German laboratories",
-    image: "/abaut.png.jpg",
-    bulletHeading: "What visitors can expect:",
-    paragraphs: [
-      "Ivexia Peptide provides organized research-use-only peptide information with clear categories, product details, and professional navigation.",
-      "The experience is built for users who need fast access to peptide research references and product information.",
-    ],
-    bullets: ["Structured peptide categories", "Readable research references", "Clear product browsing"],
-  },
-  {
-    heading: "Ivexia Peptide in France",
-    subheading: "Clean browsing for research-focused audiences",
-    image: "/Hexagonal1.png",
-    bulletHeading: "Our approach includes:",
-    paragraphs: [
-      "The website keeps peptide content simple to scan, with product lists, article pages, and information pages using consistent spacing and hierarchy.",
-      "Ivexia colors and branding remain intact while the overall layout follows a clean, professional reference structure.",
-    ],
-    bullets: ["Consistent page layout", "Ivexia orange accent color", "Responsive desktop and mobile pages"],
-  },
-  {
-    heading: "Ivexia Peptide in the Netherlands",
-    subheading: "Product discovery made straightforward",
-    image: "/DNA.png",
-    bulletHeading: "Catalog strengths:",
-    paragraphs: [
-      "Collection pages are organized around left category navigation, horizontal category filters, and compact product cards.",
-      "This makes it easier to move between all peptides, popular peptides, bundles, and individual product pages.",
-    ],
-    bullets: ["All Peptides route", "Popular Peptides route", "Bundle & Save route"],
-  },
-  {
-    heading: "Ivexia Peptide in Italy",
-    subheading: "Research content with better structure",
-    image: "/medicin.png",
-    bulletHeading: "Information pages include:",
-    paragraphs: [
-      "Peptide information and peptide research sections are arranged for easier reading, with article previews, sidebars, and clear calls to action.",
-      "Content remains positioned for research and educational reference only.",
-    ],
-    bullets: ["Peptide information library", "Research article previews", "Research-use-only notices"],
-  },
-  {
-    heading: "Ivexia Peptide in Spain",
-    subheading: "Support and company information",
-    image: "/b.png",
-    bulletHeading: "Support experience:",
-    paragraphs: [
-      "The contact and company pages are designed with clean two-column and section-based presentation.",
-      "Visitors can find support details, company values, and page navigation without losing the Ivexia brand look.",
-    ],
-    bullets: ["Dedicated contact page", "Company overview", "Mission and ethics sections"],
-  },
-];
-
-const featureCards = [
-  "Clean catalog structure for research products.",
-  "Consistent Ivexia Peptide branding and orange accent system.",
-  "Information pages styled for quick scanning and readability.",
-  "Support details available through a dedicated contact page.",
-  "Collection pages organized by product category.",
-  "Research-use-only messaging throughout the experience.",
-];
-
 export const metadata = {
   title: "About Ivexia Peptide",
-  description: "Learn about Ivexia Peptide research-use-only product information and company values.",
+  description:
+    "Learn about Ivexia Peptide research peptides, company values, service, shipping, and customer support.",
 };
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white text-[#374151]">
+    <main className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="mx-auto max-w-[1300px] space-y-10 px-4 py-8 sm:space-y-14 sm:px-6 sm:py-12 lg:space-y-24 lg:py-20">
-        <div className="space-y-10">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 rounded-full bg-[#F04423]" />
-            <span className="text-sm font-semibold uppercase text-[#F04423]">
-              Company Overview
-            </span>
-          </div>
+     <section className="mx-auto max-w-[1525px] px-6 py-10 lg:px-20">
+        <h1 className="mb-5 text-[28px] font-bold leading-tight text-black">
+          About Ivexia Peptide
+        </h1>
 
-          <h1 className="text-3xl font-bold text-[#090909] md:text-4xl">
-            About Ivexia Peptide
-          </h1>
+        <div className="grid gap-10 lg:grid-cols-[1fr_510px] lg:items-start">
+          <div className="text-[14px] leading-[1.6] text-black">
+            <h2 className="mb-4 text-[20px] font-bold">Our Company</h2>
 
-          {countrySections.map((country, index) => (
-            <section
-              key={country.heading}
-              className="grid items-center gap-6 pt-8 sm:gap-8 sm:pt-10 lg:grid-cols-2 lg:gap-12 lg:pt-16"
-            >
-              <div className={index % 2 !== 0 ? "lg:order-2" : ""}>
-                <h2 className="text-2xl font-bold text-[#090909]">
-                  {country.heading}
-                </h2>
-
-                <p className="text-lg font-medium text-[#F04423]">
-                  {country.subheading}
-                </p>
-
-                <div className="mt-4 space-y-4 leading-relaxed">
-                  {country.paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-
-                <h3 className="mt-4 text-lg font-semibold text-[#090909]">
-                  {country.bulletHeading}
-                </h3>
-
-                <ul className="mt-2 list-inside list-disc space-y-1">
-                  {country.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div
-               className={`relative flex h-[220px] w-full max-w-[460px] items-center justify-center overflow-hidden rounded-xl bg-[#FFF7F4] sm:h-[260px] lg:h-[300px] ${
-  index % 2 !== 0 ? "lg:order-1 lg:justify-self-start" : "lg:justify-self-end"
-}`}
-              >
-                <Image
-                  src={country.image}
-                  alt={country.heading}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover lg:object-cover"
-                />
-              </div>
-            </section>
-          ))}
-        </div>
-
-        <section className="grid gap-10 md:grid-cols-2">
-          <div className="rounded-xl border border-[#E5E5E5] p-8">
-            <h2 className="text-2xl font-semibold text-[#090909]">Mission</h2>
-            <p className="mt-3 leading-relaxed">
-              To provide a clean, professional, and easy-to-navigate peptide
-              reference experience for research-focused visitors.
+            <p>
+              Ivexia Peptide™ is a leading provider of USA manufactured,
+              research peptides. We have negotiated and partnered with WHO/GMP
+              and ISO 9001:2015 approved manufacturers for the best prices
+              available and for the highest quality and highest purity products.
+              We are happy to pass those savings on to our customers, and are
+              proud to be a trusted resource for the products we provide to the
+              scientific community. Ivexia Peptide™ offers comprehensive
+              resources with the latest scientific publications to advance
+              research and development of peptides and proteins.
             </p>
-          </div>
 
-          <div className="rounded-xl border border-[#E5E5E5] p-8">
-            <h2 className="text-2xl font-semibold text-[#090909]">Vision</h2>
-            <p className="mt-3 leading-relaxed">
-              To keep Ivexia Peptide product and research information organized,
-              readable, and consistent across every page.
-            </p>
-          </div>
-        </section>
-
-        <section className="grid items-center gap-16 lg:grid-cols-2">
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-[#090909]">
-              Quality, Service, and Value
+            <h2 className="mb-4 mt-10 text-[20px] font-bold">
+              Quality. Service. Value.
             </h2>
+
             <p>
-              Ivexia Peptide focuses on a clear research-use-only browsing
-              experience, structured product categories, and readable article
-              pages.
+              Ivexia Peptide™ is your safe, convenient and private online source
+              for U.S.A manufactured, highest purity, research peptides. Quality
+              products and exceptional service are very important to us, and we
+              work hard to bring value to our customers. We manufacture our
+              products through the most reputable research chemical manufacturing
+              companies in the world, and our prices are some of the lowest
+              online.
             </p>
+
+            <p className="mt-5">
+              Ordering online is simple and convenient. You enjoy complete
+              privacy, and can order any time 24x7. Our shopping cart is
+              completely secured using the latest SSL technology, and we protect
+              your information with the highest standards in privacy assurance.
+              Your orders and payment information remain encrypted, protected
+              and 100% discreet.
+            </p>
+
+            <h2 className="mb-4 mt-10 text-[20px] font-bold">Shipping</h2>
+
+            <p>We offer fast and secure shipping to the USA.</p>
+
+            <h2 className="mb-4 mt-10 text-[20px] font-bold">Our Customers</h2>
+
             <p>
-              The page layout uses a clean section rhythm while
-              preserving Ivexia’s colors, logo, and brand identity.
+              We take pride in our service and value every customer relationship.
+              With satisfied customers around the world, you can be assured of a
+              safe and satisfied shopping experience with the highest quality
+              research products from Ivexia Peptide™.
+            </p>
+
+            <p className="mt-5">
+              From all of us at Ivexia Peptide™, thank you. Please dont
+              hesitate to contact us at{" "}
+              <a
+                href="mailto:service@ivexiapeptide.com"
+                className="font-semibold underline"
+              >
+                service@ivexiapeptide.com
+              </a>{" "}
+              with any questions you may have.
             </p>
           </div>
 
-          <div className="relative h-[300px] max-w-[460px] overflow-hidden rounded-xl bg-[#FFF7F4] lg:justify-self-end">
+          <div className="relative mt-2 h-[430px] w-full overflow-hidden">
             <Image
               src="/abaut.png.jpg"
-              alt="Lab research"
+              alt="Ivexia Peptide laboratory research"
               fill
+              priority
               className="object-cover"
             />
+
+            <Image
+              src="/Ivexia_Peptide.png"
+              alt="Ivexia Peptide Logo"
+              width={260}
+              height={90}
+              className="absolute left-1/2 top-1/2 w-[230px] -translate-x-1/2 -translate-y-1/2 object-contain"
+            />
           </div>
-        </section>
-
-        <section className="space-y-10">
-          <h2 className="text-3xl font-bold text-[#090909]">Why Choose Us</h2>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featureCards.map((feature) => (
-              <div key={feature} className="rounded-xl border border-[#E5E5E5] p-6">
-                {feature}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-xl border border-[#E5E5E5] bg-[#F7F7F7] p-8">
-          <h2 className="text-2xl font-semibold text-[#090909]">Ethics</h2>
-          <p className="mt-3 leading-relaxed">
-            Ivexia Peptide content is presented for informational and research
-            reference purposes only and is not intended as medical advice.
-          </p>
-        </section>
+        </div>
       </section>
 
       <Footer />

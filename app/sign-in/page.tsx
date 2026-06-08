@@ -14,15 +14,16 @@ export const metadata = {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; returnTo?: string }>;
 }) {
+  const { error, returnTo } = await searchParams;
+  const redirectTo =
+    returnTo?.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/account";
   const session = await getSession();
 
   if (session) {
-    redirect("/account");
+    redirect(redirectTo);
   }
-
-  const { error } = await searchParams;
 
   return (
     <main className="min-h-screen bg-white text-[#090909]">
@@ -47,6 +48,8 @@ export default async function SignInPage({
             )}
 
             <form action={signIn} className="mt-8 max-w-[420px] space-y-8">
+              <input type="hidden" name="redirectTo" value={redirectTo} />
+
               <label className="block">
                 <span className="text-sm font-medium text-black">
                   Email <span className="text-[#F04423]">*</span>
@@ -110,7 +113,7 @@ export default async function SignInPage({
             </p>
 
             <Link
-              href="/register"
+              href={`/register?returnTo=${encodeURIComponent(redirectTo)}`}
               className="mt-8 inline-flex rounded-md bg-[#F04423] px-9 py-3 text-sm font-bold text-white transition hover:bg-[#D93A18]"
             >
               Create an Account

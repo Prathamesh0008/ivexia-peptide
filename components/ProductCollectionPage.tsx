@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useMemo, useRef, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
@@ -49,16 +49,32 @@ function isBundleProduct(product: Product) {
   return /bundle|blend|combo/i.test(text);
 }
 
+function getInitialCategory(mode: CollectionMode, requestedCategory?: string) {
+  const fallback = mode === "popular" ? "Popular Peptides" : "All Peptides";
+  const categories = getCategories(mode);
+
+  return requestedCategory && categories.includes(requestedCategory)
+    ? requestedCategory
+    : fallback;
+}
+
 export default function ProductCollectionPage({
   mode,
+  initialCategory,
 }: {
   mode: CollectionMode;
+  initialCategory?: string;
 }) {
-  const initialCategory = mode === "popular" ? "Popular Peptides" : "All Peptides";
-  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const initialActiveCategory = getInitialCategory(mode, initialCategory);
+  const [activeCategory, setActiveCategory] = useState(initialActiveCategory);
   const [visible, setVisible] = useState(mode === "all" ? 24 : 48);
 
   const categories = useMemo(() => getCategories(mode), [mode]);
+
+  useEffect(() => {
+    setActiveCategory(initialActiveCategory);
+    setVisible(mode === "all" ? 24 : 48);
+  }, [initialActiveCategory, mode]);
 
   const visibleProducts = useMemo(() => {
     if (mode === "popular") {
